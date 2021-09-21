@@ -1,13 +1,11 @@
-%{
-=========================================================
-            === INTRODUCTION TO MATLAB ===
-=========================================================
-Rafael Serrano Quintero
-April 2021
-
-This code shows the first commands and introduction to follow during the
-class.
-%}
+% =========================================================
+%             === INTRODUCTION TO MATLAB ===
+% =========================================================
+% Rafael Serrano Quintero
+% September 2021
+% 
+% This code shows the first commands and introduction to follow during the
+% class.
 
 clear
 clc

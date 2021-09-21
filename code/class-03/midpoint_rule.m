@@ -1,5 +1,10 @@
 function [value] = midpoint_rule(a,b,n,myfunc)
-    % Numerical integration with midpoint rule
+%----------------------------------------------
+% Rafael Serrano Quintero
+% September 2021
+%----------------------------------------------
+% Numerically integrates function myfunc with
+% the midpoint rule.
     xpts = zeros(n,1);
     h = (b-a)/n;
     for jj=1:n 

@@ -1,3 +1,10 @@
+% =========================================================
+%             === INTRODUCTION TO MATLAB ===
+% =========================================================
+% Rafael Serrano Quintero
+% September 2021
+%
+% Illustration of fminunc with the Rosenbrock function 
 close all
 clear
 clc

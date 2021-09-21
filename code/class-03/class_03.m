@@ -1,15 +1,16 @@
-%{
-Rafael Serrano Quintero
-September 2021
+% =========================================================
+%             === INTRODUCTION TO MATLAB ===
+% =========================================================
+% Rafael Serrano Quintero
+% September 2021
 
-This code introduces the basics of root finding, numerical differentiation and integration.
-
-Outline
----------------------------------------------------------------------------
-1) Bisection method
-2) Newton-Raphson method
-3) Finite differences
-%}
+% This code introduces the basics of root finding, numerical differentiation and integration.
+% 
+% Outline
+% ---------------------------------------------------------------------------
+% 1) Bisection method
+% 2) Newton-Raphson method
+% 3) Finite differences
 
 close all
 clear
