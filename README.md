@@ -1,8 +1,29 @@
 # Introduction to Matlab
 
-Notes and problem sets for an introduction to Matlab. This set of notes and problem sets build on different materials found on the web. Among them:
+## Course Description
 
-1. [QuantEcon](https://quantecon.org/)
-2. [MathWorks](https://es.mathworks.com/academia/highschool/courseware/introduction-to-matlab.html)
-3. [Undocumented Matlab](http://undocumentedmatlab.com/)
-4. [Dynare](https://www.dynare.org/)
+This is an introduction to Matlab and basic numerical methods for Master Students at the [School of Economics at the University of Barcelona](https://www.ub.edu/school-economics/).
+
+## Course Overview
+
+- Matlab preliminaries.
+  - First interactions. Script vs Command Window.
+  - Creating Variables. Basic Operations. Arrays and Matrices.
+  - Control Flow. Plots. Functions.
+- Importing and manipulating data. Polynomial fit and evaluation. Nonlinear least squares.
+- Basics of root finding, numerical differentiation and integration.
+- Basics of numerical optimization.
+
+## Useful Materials
+
+I will follow my slides but they are basically a compendium of materials. Most of it based on:
+
+- [Judd, K.L. (1998) *Numerical Methods in Economics*. MIT Press](https://mitpress.mit.edu/books/numerical-methods-economics)
+- [Kochenderfer, M.J. & Wheeler, T.A. (2019). *Algorithms for Optimization*. MIT Press](https://mitpress.mit.edu/books/algorithms-optimization)
+- [Peter H. Gruber - Script Solving Economics and Finance Problems with MATLAB](https://people.lu.usi.ch/gruberp/MatlabMasterScript.pdf)
+- [QuantEcon Cheatsheet](https://cheatsheets.quantecon.org/index.html) -  for Matlab, Python, and Julia.
+- [QuantEcon Lectures](https://quantecon.org/lectures/)
+[- Jesús Fernández-Villaverde - Computational Methods for Economists](https://www.sas.upenn.edu/~jesusfv/teaching.html)
+- [Numerical Tours --- Gabriel Peyré](http://www.numerical-tours.com/matlab/)
+- [Undocumented Matlab](http://undocumentedmatlab.com/)
+- If you go into DSGE macro modelling, [Dynare](https://www.dynare.org/) is a great resource.
