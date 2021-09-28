@@ -40,7 +40,7 @@
 \hypersetup
 {
     pdfauthor={Rafael Serrano-Quintero},
-    pdfsubject={Intro to Matlab PS2},
+    pdfsubject={Intro to Matlab - PS2},
     colorlinks = {true},
     linkcolor = {FireBrick},
     citecolor = {FireBrick},
@@ -125,7 +125,7 @@ f(x) = x^2 - \log\left(\frac{x^2}{3}\right)
 
 \begin{enumerate}
     \item Find a minimum of the function using the bracketing method. State clearly which initial triplet $(a,b,c)$ you start with and what solution you find.
-    \item Find a minimum of the function using \verb;fminsearch; with initial condition $x_0 = \pm 1$.
+    \item Find a minimum of the function using \verb;fminsearch; with initial condition $x_0 = \pm 2$.
     \item Compare the two procedures.
 \end{enumerate}
 \end{exercise}
@@ -165,14 +165,14 @@ has a constant elasticity of substitution $\sigma$ and nests three particular ca
     \end{equation}
     \item If $\sigma\rightarrow 0$ the function becomes Leontief (perfect complements)
     \begin{equation}
-    F(K,L) = \min\{\alpha K, (1-\alpha)L\}
+    F(K,L) = \min\{K,L\}
     \label{eqn:leontief}
     \end{equation}
 \end{itemize}
 
 \begin{enumerate}
-    \item Write a function that takes three inputs, the elasticity $\sigma$, a vector of values for $K$ and a vector of values for $L$. The function should distinguish the four different cases \eqref{eqn:ces_function}, \eqref{eqn:linear}, \eqref{eqn:cobb_douglas}, \eqref{eqn:leontief}.
-    \item Show numerically (preferably with a plot) that as $\sigma$ goes to $\{0, 1, \infty\}$ the CES approaches each case. \textit{\underline{Hint:} it might be easier to rewrite the function in intensive form, i.e. divide by $L$ and define $k = K/L$.}
+    \item Write a function that takes four inputs, the elasticity $\sigma$, the distribution parameter $\alpha$, a vector of values for $K$ and a vector of values for $L$. The function should distinguish the three four different cases \eqref{eqn:ces_function}, \eqref{eqn:linear}, \eqref{eqn:cobb_douglas}, \eqref{eqn:leontief}. Show in a \verb;subplot; the three different cases with a $3-$D figure. \underline{Hint:} You might want to check \href{https://www.mathworks.com/help/matlab/ref/surf.html}{\texttt{surf}} command.
+    \item Show numerically (preferably with a plot) that as $\sigma$ goes to $\{0, 1, \infty\}$ the CES approaches each case. \underline{Hint:} it might be easier to rewrite the function in intensive form, i.e. divide by $L$ and define $k = K/L$. Recall that the CES is homogeneous of degree $1$.
 \end{enumerate}
 \end{exercise}
 
