@@ -1,146 +1,10 @@
 \documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
 
-% Add space in lists
-\let\toneitemize\itemize
-\let\ttwoitemize\enditemize
-\renewenvironment{itemize}{\toneitemize\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoitemize}
-
-\let\toneenumer\enumerate
-\let\ttwoenumer\endenumerate
-\renewenvironment{enumerate}{\toneenumer\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoenumer}
-
-% Alert color
-\setbeamercolor{alerted text}{fg=DarkOrange}
-
-% Itemize w bullets
-\setbeamertemplate{itemize items}{$\circ$}
-
-% Font size of title
-\setbeamerfont{title}{size=\huge}
-
-%===========================================================
-% Color specifications
-%===========================================================
-\definecolor{GreyishBlue}{HTML}{087E8B} 	% Headings color
-\definecolor{CitationsBlue}{HTML}{2B6684} 	% Color for citations
-\definecolor{LinksPink}{HTML}{ff0054}       % Color for links
-
-% Template for syntax highlighting
-\definecolor{BeigeBackground}{HTML}{fdf6e3}
-\definecolor{BlueKeyWord}{HTML}{268bd2}
-
-\setbeamercolor{palette primary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette secondary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette tertiary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette quaternary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{structure}{fg=GreyishBlue} % itemize, enumerate, etc
-\setbeamercolor{section in toc}{fg=GreyishBlue} % TOC sections
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{button}{bg=white, fg=GreyishBlue}
-
-%===========================================================
-% Language and font settings
-%===========================================================
-\usepackage[english,activeacute]{babel} % Language
-\usefonttheme{professionalfonts}		% Avoid overwriting fonts
-
-\usepackage[sfdefault,light]{FiraSans}
-\usepackage[utf8]{inputenc}				% Special symbols
-\usepackage[T1]{fontenc}				% T1 Encoding of font
-
-%===========================================================
-% Math font settings
-%===========================================================
-\usepackage{mathpazo}					% Math font
-\usepackage{amsmath,amsfonts,amssymb,amsthm}	% Math symbols
-\usepackage{dsfont}						% Math symbols like R for reals...
-
-%===========================================================
-% Numeration in environments
-%===========================================================
-\setbeamertemplate{theorems}[numbered]
-\undef{\definition}
-\newtheorem{definition}{Definition}
-\setbeamertemplate{definitions}[numbered]
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{caption}[numbered]
-\newtheorem{exercise}{Exercise}
-
-\usepackage{appendixnumberbeamer}
-
-%===========================================================
-% References' colors and PDF properties
-%===========================================================
-\usepackage{hyperref}
-\hypersetup
-{
-    pdfauthor={Rafael Serrano Quintero},
-    pdfsubject={Introduction to Matlab},
-    colorlinks = {true},
-    linkcolor = {GreyishBlue},
-    citecolor = {LinksPink},
-    urlcolor = {LinksPink},
-    filecolor = {LinksPink}
-}
-%===========================================================
-% Additional packages
-%===========================================================
-\usepackage{graphicx}
-\usepackage{tikz}
-\usepackage{longtable}
-\usepackage{appendix}
-\usepackage{marvosym}
-\usepackage{epstopdf}
-\usepackage[round]{natbib}
-% Change manually the color of the parenthesis
-\bibpunct{\textcolor{CitationsBlue}{(}}{\textcolor{CitationsBlue}{)}}{,}{a}{}{;}
-
-\usepackage[flushleft]{threeparttable}
-\usepackage{booktabs}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{multicol}
-
-%========================================================================================
-% Syntax highlighting for Matlab
-%========================================================================================
-\usepackage{fancyvrb}  %To reduce font size in verbatim environment
-\usepackage{listings}
-
-
-\lstloadlanguages{Matlab}%
-\lstset{
-    language=Matlab,
-    basicstyle=\footnotesize\ttfamily,
-    backgroundcolor=\color{BeigeBackground}, 
-    breaklines=true,                 
-    captionpos=b,                    
-    commentstyle=\color{gray},   
-    frame=none,
-    keywordstyle=[1]\color{BlueKeyWord}\bfseries, % MATLAB functions bold and blue
-    keywordstyle=[2]\color{Purple},  % MATLAB function arguments purple
-    keywordstyle=[3]\color{Purple}\underbar,  % User functions underlined and blue      
-    stringstyle=\color{Purple},   
-    morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf,ones},
-    %Put MATLAB function parameters here
-    morekeywords=[2]{all, on, off, interp},
-    morecomment=[s]{\%\{}{\%\}},
-    numbers=left,                    
-    numbersep=3pt,                   
-    numberstyle=\tiny\color{black},
-    rulecolor=\color{black},        
-    showspaces=false,               
-    showstringspaces=false,          
-    showtabs=false,                  
-    stepnumber=1,                    
-    tabsize=2         
-}
-
 %===========================================================
 % DOCUMENT
 %===========================================================
+\usepackage{rafa_style_beamer}
+\addbibresource{../matlab_intro.bib}
 \title{Introduction to Matlab}
 \subtitle{Lesson 04 --- Optimization}
 
@@ -148,32 +12,6 @@
 
 \institute{Department of Economics \\ University of Barcelona}
 \date{}
-
-\AtBeginSection[]{\frame{\sectionpage}}
-\AtBeginSubsection[]{\frame{\subsectionpage}}
-
-\defbeamertemplate{section page}{mine}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\defbeamertemplate{subsection page}{mine_sub}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{subsection title}\insertsubsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\setbeamertemplate{section page}[mine]
-\setbeamertemplate{subsection page}[mine_sub]
 
 \begin{document}
 
@@ -276,7 +114,7 @@ Let $f : \mathcal{D}\subseteq\mathbb{R}^n \mapsto \mathbb{R}$ be a $\mathcal{C}^
   \frametitle{Optimization Preliminaries --- Recap}
 \begin{itemize}
   \item This has been a very brief recap on basic optimization.
-  \item For a refresher, you can take a look at \citet[Chapters~17-19]{simon1994mathematics}.
+  \item For a refresher, you can take a look at \cite[Chapters~17-19]{simon1994mathematics}.
   \item We will cover the very basics of optimization and implementation in Matlab.
   \item All numerical optimization methods:
   \begin{itemize}
@@ -322,7 +160,8 @@ We will look at methods in the first two.
 
 \begin{frame}
   \frametitle{Bracketing Method --- The Intuition}
-  \begin{minipage}{0.49\textwidth}
+  \begin{columns}
+  \begin{column}{0.49\textwidth}
     \begin{itemize}
       \item Suppose $f : \mathbb{R}\mapsto\mathbb{R}$ is \href{https://en.wikipedia.org/wiki/Unimodality\#Unimodal_function}{unimodal}.
       \item Let $a<b<c\in\mathbb{R}$ be three points such that
@@ -332,13 +171,14 @@ We will look at methods in the first two.
       \item Then, we know a minimum exists in $[a,c]$.
       \item How to find the optimum?
     \end{itemize}
-  \end{minipage}
-  \begin{minipage}{0.5\textwidth}
+  \end{column}
+  \begin{column}{0.5\textwidth}
     \begin{figure}
       \includegraphics[width=0.95\textwidth]{../figures/optimization_bracketing.png}
-      \caption{See \citet[Chapter~3]{kochenderfer2019optimization}}
+      \caption{See \cite{kochenderfer2019optimization}}
     \end{figure}
-  \end{minipage}
+  \end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -767,12 +607,6 @@ x = fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon,options)
   \item Try to normalize variables as much as you can, unit free problems are typically easier.
   \item Take advantage of the problem you are tackling by simplifying the computations as much as you can.
 \end{itemize}
-\end{frame}
-
-\begin{frame}<beamer:0>
-  \nocite{*}
-  \bibliography{../matlab_intro.bib}
-  \bibliographystyle{ecta}
 \end{frame}
 
 \end{document}

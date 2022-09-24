@@ -1,146 +1,10 @@
 \documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
 
-% Add space in lists
-\let\toneitemize\itemize
-\let\ttwoitemize\enditemize
-\renewenvironment{itemize}{\toneitemize\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoitemize}
-
-\let\toneenumer\enumerate
-\let\ttwoenumer\endenumerate
-\renewenvironment{enumerate}{\toneenumer\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoenumer}
-
-% Alert color
-\setbeamercolor{alerted text}{fg=DarkOrange}
-
-% Itemize w bullets
-\setbeamertemplate{itemize items}{$\circ$}
-
-% Font size of title
-\setbeamerfont{title}{size=\huge}
-
-%===========================================================
-% Color specifications
-%===========================================================
-\definecolor{GreyishBlue}{HTML}{087E8B} 	% Headings color
-\definecolor{CitationsBlue}{HTML}{2B6684} 	% Color for citations
-\definecolor{LinksPink}{HTML}{ff0054}       % Color for links
-
-% Template for syntax highlighting
-\definecolor{BeigeBackground}{HTML}{fdf6e3}
-\definecolor{BlueKeyWord}{HTML}{268bd2}
-
-\setbeamercolor{palette primary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette secondary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette tertiary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette quaternary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{structure}{fg=GreyishBlue} % itemize, enumerate, etc
-\setbeamercolor{section in toc}{fg=GreyishBlue} % TOC sections
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{button}{bg=white, fg=GreyishBlue}
-
-%===========================================================
-% Language and font settings
-%===========================================================
-\usepackage[english,activeacute]{babel} % Language
-\usefonttheme{professionalfonts}		% Avoid overwriting fonts
-
-\usepackage[sfdefault,light]{FiraSans}
-\usepackage[utf8]{inputenc}				% Special symbols
-\usepackage[T1]{fontenc}				% T1 Encoding of font
-
-%===========================================================
-% Math font settings
-%===========================================================
-\usepackage{mathpazo}					% Math font
-\usepackage{amsmath,amsfonts,amssymb,amsthm}	% Math symbols
-\usepackage{dsfont}						% Math symbols like R for reals...
-
-%===========================================================
-% Numeration in environments
-%===========================================================
-\setbeamertemplate{theorems}[numbered]
-\undef{\definition}
-\newtheorem{definition}{Definition}
-\setbeamertemplate{definitions}[numbered]
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{caption}[numbered]
-\newtheorem{exercise}{Exercise}
-
-\usepackage{appendixnumberbeamer}
-
-%===========================================================
-% References' colors and PDF properties
-%===========================================================
-\usepackage{hyperref}
-\hypersetup
-{
-    pdfauthor={Rafael Serrano Quintero},
-    pdfsubject={Introduction to Matlab},
-    colorlinks = {true},
-    linkcolor = {GreyishBlue},
-    citecolor = {LinksPink},
-    urlcolor = {LinksPink},
-    filecolor = {LinksPink}
-}
-%===========================================================
-% Additional packages
-%===========================================================
-\usepackage{graphicx}
-\usepackage{tikz}
-\usepackage{longtable}
-\usepackage{appendix}
-\usepackage{marvosym}
-\usepackage{epstopdf}
-\usepackage[round]{natbib}
-% Change manually the color of the parenthesis
-\bibpunct{\textcolor{CitationsBlue}{(}}{\textcolor{CitationsBlue}{)}}{,}{a}{}{;}
-
-\usepackage[flushleft]{threeparttable}
-\usepackage{booktabs}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{multicol}
-
-%========================================================================================
-% Syntax highlighting for Matlab
-%========================================================================================
-\usepackage{fancyvrb}  %To reduce font size in verbatim environment
-\usepackage{listings}
-
-
-\lstloadlanguages{Matlab}%
-\lstset{
-    language=Matlab,
-    basicstyle=\footnotesize\ttfamily,
-    backgroundcolor=\color{BeigeBackground}, 
-    breaklines=true,                 
-    captionpos=b,                    
-    commentstyle=\color{gray},   
-    frame=none,
-    keywordstyle=[1]\color{BlueKeyWord}\bfseries, % MATLAB functions bold and blue
-    keywordstyle=[2]\color{Purple},  % MATLAB function arguments purple
-    keywordstyle=[3]\color{Purple}\underbar,  % User functions underlined and blue      
-    stringstyle=\color{Purple},   
-    morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf,ones},
-    %Put MATLAB function parameters here
-    morekeywords=[2]{all, on, off, interp},
-    morecomment=[s]{\%\{}{\%\}},
-    numbers=left,                    
-    numbersep=3pt,                   
-    numberstyle=\tiny\color{black},
-    rulecolor=\color{black},        
-    showspaces=false,               
-    showstringspaces=false,          
-    showtabs=false,                  
-    stepnumber=1,                    
-    tabsize=2         
-}
-
 %===========================================================
 % DOCUMENT
 %===========================================================
+\usepackage{rafa_style_beamer}
+\addbibresource{../matlab_intro.bib}
 \title{Introduction to Matlab}
 \subtitle{Lesson 03 --- Basics of Root Finding, Numerical Differentiation, and Integration}
 
@@ -148,32 +12,6 @@
 
 \institute{Department of Economics \\ University of Barcelona}
 \date{}
-
-\AtBeginSection[]{\frame{\sectionpage}}
-\AtBeginSubsection[]{\frame{\subsectionpage}}
-
-\defbeamertemplate{section page}{mine}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\defbeamertemplate{subsection page}{mine_sub}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{subsection title}\insertsubsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\setbeamertemplate{section page}[mine]
-\setbeamertemplate{subsection page}[mine_sub]
 
 \begin{document}
 
@@ -211,12 +49,28 @@ We can discuss convergence and stopping criteria in each method studied.
 
 \subsection{Bisection Method}
 
+\begin{frame}[c]
+  \frametitle{Bisection Method --- Intuition}
+ \begin{itemize}
+  \item Say you have a phone book (old school, I know). You need to find Garc\'ia in there.
+  \item What method do you use?
+  \pause
+  \begin{enumerate}
+    \item Turn page by page until you find it.
+    \pause
+    \item Turn every two pages. 
+    \pause
+    \item Open by the middle, check if G is left or right. Discard one half. Repeat until you find it.
+  \end{enumerate}
+ \end{itemize} 
+\end{frame}
+
 \begin{frame}
   \frametitle{Bisection Method --- Intuition}
-Consider $f : \mathbb{R} \mapsto \mathbb{R}$ where the problem is $f(x^*) = 0$. Suppose $f(x)$ is continuous in $[a,b]$ and we know $\exists x^*\in[a,b]$ {\tiny The ideas presented generalize to $n$ dimensions}
+Consider $f : \mathbb{R} \mapsto \mathbb{R}$ where the problem is $f(x^*) = 0$. Suppose $f(x)$ is continuous in $[a,b]$ and we know $\exists x^*\in[a,b]$ {\tiny (The ideas presented generalize to $n$ dimensions)}
 
 \begin{itemize}
-  \item \textbf{Bisect} the interval $[a,b]$ and take the middle point $c = \frac{a + b}{2}$. If $f(c) = 0$ we are done. Otherwise, $x^*$ must be in either $[a,c]$ or $[c,b]$.
+  \item \alert{\textbf{Bisect}} the interval $[a,b]$ and take the middle point $c = \frac{a + b}{2}$. If $f(c) = 0$ we are done. Otherwise, $x^*$ must be in either $[a,c]$ or $[c,b]$.
   \item Find the one that contains $x^*$ and bisect again. \alert{\textbf{How?!?}}
   \item Continue until the interval is as small as the accuracy desired.
 \end{itemize}
@@ -475,21 +329,23 @@ p(x) = f(x_k) + (x - x_k)f'(x_k)
 
 \begin{frame}[fragile]
   \frametitle{Newton-Raphson --- Some Issues} 
-  \begin{minipage}[l]{0.39\textwidth}
+  \begin{columns}
+  \begin{column}{0.39\textwidth}
   \begin{itemize}
     \item Consider $f(x) = x^6$
     \item $x_{k+1} = (5/6)x_k$
     \item Still far after $100$ iterations!
   \end{itemize}
-  \end{minipage}
-  \begin{minipage}[r]{0.6\textwidth}
+  \end{column}
+  \begin{column}{0.6\textwidth}
     \begin{figure}
       \centering
       \includegraphics[width = \textwidth]{../figures/newton_convergence_issues.png}
       \caption{Convergence Issues with Newton-Raphson}
       \label{fig:newton_convergence}
     \end{figure}
-\end{minipage}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -587,7 +443,8 @@ f(x) = x^3 - 6x^2 + 11x - 6
 
 \begin{frame}[fragile]
   \frametitle{Numerical Differentiation --- An Example}
-\begin{minipage}[r]{0.38\textwidth}
+\begin{columns}
+\begin{column}{0.38\textwidth}
 {\footnotesize As $h\rightarrow 0$, the derivative converges.}
 \begin{lstlisting}
 N = 10;
@@ -598,15 +455,16 @@ dy = myf(x+h) - myf(x);
 dx = h.*ones(size(dy));
 fp_num = dy./dx;
 \end{lstlisting}
-\end{minipage}
-\begin{minipage}[r]{0.61\textwidth}
+\end{column}
+\begin{column}{0.61\textwidth}
   \begin{figure}
     \centering
     \includegraphics[width = \textwidth]{../figures/finite_differences.png}
     \caption{Accuracy of Finite Difference}
     \label{fig:finite_differences}
   \end{figure}
-\end{minipage}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -650,7 +508,7 @@ fp_num = dy./dx;
   \frametitle{Symbolic and Automatic Differentiation}
 \begin{itemize}
   \item \href{https://www.mathworks.com/help/symbolic/diff.html\#btwol6i-2}{Symbolic differentiation} applies the rules of derivatives to symbolic expressions. What we humans do.
-  \item \href{https://en.wikipedia.org/wiki/Automatic_differentiation}{Automatic differentiation} breaks codes into smaller sections and applies the chain rule \citep[See Chapter~4]{kwon2019julia}.
+  \item \href{https://en.wikipedia.org/wiki/Automatic_differentiation}{Automatic differentiation} breaks codes into smaller sections and applies the chain rule \parencite[See Chapter~4]{kwon2019julia}.
   \item The advantage of automatic differentiation is that computes \alert{\textbf{analytical}} derivatives at the same cost. No error!
   \item Automatic differentiation evaluates expressions numerically early, symbolic differentiation at the end.
   \item Thus, symbolic is more costly. Check \href{https://www.mathworks.com/help/deeplearning/ug/deep-learning-with-automatic-differentiation-in-matlab.html}{Matlab's documentation}
@@ -773,8 +631,9 @@ and we say that $f$ is \alert{\textbf{Riemann integrable}} with Riemann integral
 \begin{example}
 Compute $\int^5_1 x^2 dx = \frac{124}{3}\approx 41.333$. Errors decline with the number of points $n$.
 \end{example}
-\begin{minipage}{0.45\textwidth}
-\begin{lstlisting}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
 function [value] = midpoint_rule(a,b,n,myfunc)
   % Numerical integration with midpoint rule
   xpts = zeros(n,1);
@@ -785,14 +644,15 @@ function [value] = midpoint_rule(a,b,n,myfunc)
   value = h*sum(myfunc(xpts));
 end
 \end{lstlisting}
-\end{minipage}
-\begin{minipage}{0.54\textwidth}
+\end{column}
+\begin{column}{0.5\textwidth}
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{../figures/errors_midpointrule.png}
     \caption{Relative errors in $\log_{10}$ units}
   \end{figure}
-\end{minipage}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -821,12 +681,6 @@ end
   \item The latter uses adaptive quadratures. Basically, adapts the subintervals refining the process. But the quadrature rules can still be Newton-Cotes.
   \item For double and triple integrals, Matlab has \href{https://www.mathworks.com/help/matlab/ref/integral2.html}{\texttt{integral2}} and \href{https://www.mathworks.com/help/matlab/ref/integral3.html}{\texttt{integral3}} respectively.
 \end{itemize}
-\end{frame}
-
-\begin{frame}<beamer:0>
-  \nocite{*}
-  \bibliography{../matlab_intro.bib}
-  \bibliographystyle{ecta}
 \end{frame}
 
 \end{document}

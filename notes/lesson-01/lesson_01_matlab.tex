@@ -1,190 +1,20 @@
 \documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
-
-% Add space in lists
-\let\toneitemize\itemize
-\let\ttwoitemize\enditemize
-\renewenvironment{itemize}{\toneitemize\addtolength{\itemsep}{1.35\baselineskip}}{\ttwoitemize}
-
-\let\toneenumer\enumerate
-\let\ttwoenumer\endenumerate
-\renewenvironment{enumerate}{\toneenumer\addtolength{\itemsep}{1.35\baselineskip}}{\ttwoenumer}
-
-% Alert color
-\setbeamercolor{alerted text}{fg=DarkOrange}
-
-% Itemize w bullets
-\setbeamertemplate{itemize items}{$\circ$}
-
-% Font size of title
-\setbeamerfont{title}{size=\huge}
-
-% Transition section slides
-\setbeamertemplate{section page}
-{
-    \begin{centering}
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-        \setbeamerfont{section title}{size=\huge}
-        \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-    \end{centering}
-}
-
-%===========================================================
-% Color specifications
-%===========================================================
-\definecolor{GreyishBlue}{HTML}{087E8B} 	% Headings color
-\definecolor{CitationsBlue}{HTML}{2B6684} 	% Color for citations
-\definecolor{LinksPink}{HTML}{ff0054}       % Color for links
-
-% Template for syntax highlighting
-\definecolor{BeigeBackground}{HTML}{fdf6e3}
-\definecolor{BlueKeyWord}{HTML}{268bd2}
-
-\setbeamercolor{palette primary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette secondary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette tertiary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette quaternary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{structure}{fg=GreyishBlue} % itemize, enumerate, etc
-\setbeamercolor{section in toc}{fg=GreyishBlue} % TOC sections
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{button}{bg=white, fg=GreyishBlue}
-
-%===========================================================
-% Numeration in environments
-%===========================================================
-\setbeamertemplate{theorems}[numbered]
-\setbeamertemplate{definitions}[numbered]
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{caption}[numbered]
-
-\usepackage{appendixnumberbeamer}
-
-%===========================================================
-% Language and font settings
-%===========================================================
-\usepackage[english,activeacute]{babel} % Language
-\usefonttheme{professionalfonts}		% Avoid overwriting fonts
-
-\usepackage[sfdefault,light]{FiraSans}
-\usepackage[utf8]{inputenc}				% Special symbols
-\usepackage[T1]{fontenc}				% T1 Encoding of font
-
-%===========================================================
-% Math font settings
-%===========================================================
-\usepackage{mathpazo}					% Math font
-\usepackage{amsmath,amsfonts,amssymb}	% Math symbols
-\usepackage{dsfont}						% Math symbols like R for reals...
-
-%===========================================================
-% References' colors and PDF properties
-%===========================================================
-\usepackage{hyperref}
-\hypersetup
-{
-    pdfauthor={Rafael Serrano Quintero},
-    pdfsubject={Introduction to Matlab},
-    colorlinks = {true},
-    linkcolor = {GreyishBlue},
-    citecolor = {LinksPink},
-    urlcolor = {LinksPink},
-    filecolor = {LinksPink}
-}
-%===========================================================
-% Additional packages
-%===========================================================
-\usepackage{graphicx}
-\usepackage{tikz}
-
-\usepackage{longtable}
-\usepackage{appendix}
-\usepackage{marvosym}
-\usepackage{enumerate} %For enumerating with letters with option [a)]
-\usepackage{epstopdf}
-\usepackage[round]{natbib}
-% Change manually the color of the parenthesis
-\bibpunct{\textcolor{CitationsBlue}{(}}{\textcolor{CitationsBlue}{)}}{,}{a}{}{;}
-
-\usepackage[flushleft]{threeparttable}
-\usepackage{booktabs}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{multicol}
-
-%========================================================================================
-% Syntax highlighting for Matlab
-%========================================================================================
-\usepackage{fancyvrb}  %To reduce font size in verbatim environment
-\usepackage{listings}
-
-
-\lstloadlanguages{Matlab}%
-\lstset{
-    language=Matlab,
-    basicstyle=\small\ttfamily,
-    backgroundcolor=\color{BeigeBackground}, 
-    breaklines=true,                 
-    captionpos=b,                    
-    commentstyle=\color{gray},   
-    frame=none,
-    keywordstyle=[1]\color{BlueKeyWord}\bfseries, % MATLAB functions bold and blue
-    keywordstyle=[2]\color{Purple},  % MATLAB function arguments purple
-    keywordstyle=[3]\color{Purple}\underbar,  % User functions underlined and blue      
-    stringstyle=\color{Purple},   
-    morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf,ones},
-    %Put MATLAB function parameters here
-    morekeywords=[2]{all, on, off, interp},
-    morecomment=[s]{\%\{}{\%\}},
-    numbers=left,                    
-    numbersep=3pt,                   
-    numberstyle=\tiny\color{black},
-    rulecolor=\color{black},        
-    showspaces=false,               
-    showstringspaces=false,          
-    showtabs=false,                  
-    stepnumber=1,                    
-    tabsize=2         
-}
-
-\newtheorem{exercise}{Exercise}
 %===========================================================
 % DOCUMENT
 %===========================================================
+\usepackage{rafa_style_beamer}  % Loads my formatting 
+
+\usepackage{dirtree}
+
+\addbibresource{../matlab_intro.bib}
+
 \title{Introduction to Matlab}
-\subtitle{Lesson 01 --- Preliminaries and Matlab Syntax}
+\subtitle{Lesson 01 --- Matlab Syntax}
 
 \author{Rafael Serrano-Quintero}
 
 \institute{Department of Economics \\ University of Barcelona}
 \date{}
-
-\AtBeginSection[]{\frame{\sectionpage}}
-\AtBeginSubsection[]{\frame{\subsectionpage}}
-
-\defbeamertemplate{section page}{mine}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\defbeamertemplate{subsection page}{mine_sub}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{subsection title}\insertsubsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\setbeamertemplate{section page}[mine]
-\setbeamertemplate{subsection page}[mine_sub]
 
 \begin{document}
 
@@ -203,8 +33,7 @@
     \end{itemize}
     \textbf{\alert{Me}}
     \begin{itemize}
-        \item \href{rafserqui.github.io}{Rafa Serrano-Quintero} 
-        \item \href{mailto:rafael.serrano@ub.edu}{rafael.serrano@ub.edu}
+        \item \href{rafserqui.github.io}{Rafa Serrano-Quintero} \href{mailto:rafael.serrano@ub.edu}{(rafael.serrano@ub.edu)}
         \item Office hours: Any time. Send me an email and we can arrange a meeting.
     \end{itemize}
     \textbf{\alert{You}}
@@ -236,13 +65,93 @@
         \item In class solutions
         \item Final exam (take-home)
     \end{enumerate}
+\end{frame}
     
-    \textbf{\alert{Materials}} (for the first two lectures, check the syllabus)
+\begin{frame}
+  \frametitle{Syllabus Highlights --- Materials}
     \begin{itemize}
+      \item \href{https://www.elsevier.com/books/matlab/attaway/978-0-323-91750-6}{\fullcite{attaway2019matlab}}
         \item \href{https://people.lu.usi.ch/gruberp/MatlabMasterScript.pdf}{Peter H. Gruber --- Script Solving Economics and Finance Problems with MATLAB}
+        \item \href{https://quantecon.org/lectures/}{QuantEcon Lectures.} These are written for Python and Julia but many ideas port to Matlab easily.
         \item \href{https://cheatsheets.quantecon.org/index.html}{QuantEcon Cheatsheet} ---  for Matlab, Python, and Julia.
-        \item \href{https://quantecon.org/lectures/}{QuantEcon Lectures.} For Python and Julia but many ideas port to Matlab easily.
     \end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{What Matters}
+ \begin{itemize}
+  \item Not where you end up relative to your classmates but where you end up relative to your current self!
+  \item Most of you never have programmed, and that's \alert{\textbf{fine!}} 
+  \item What is programming? Problem solving!
+  \item Programming in one diagram: 
+ \end{itemize} 
+
+ \begin{center}
+   \input{diagram_programming.tex}
+ \end{center}
+ 
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Why do we need programming?}
+  \begin{exercise}
+   Suppose a firm faces a linear demand curve such as $P = a - b Q$ and the firm's cost function is given by $C(Q) = cQ + d$ where $P$ is price, $Q$ quantity, and $a,b,c,$ and $d$ are positive real constants. Find the optimal quantity to produce.
+  \end{exercise}
+  \pause
+  \begin{solution}
+   Deriving the profit function $\Pi = PQ - C(Q)$ with respect to $Q$, we find
+   \[
+     \frac{\partial \Pi}{\partial Q} = -2b Q + (a - c) = 0 \Rightarrow Q = \frac{a - c}{2b} 
+   \]
+  \end{solution}
+  
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Why do we need programming?}
+ \begin{exercise}
+   Suppose now the demand curve is $P = 10 - Q^{1/2} - Q^{1/5}$ and $C(Q) = cQ + d$.
+ \end{exercise}
+
+ \begin{solution}
+   Now the profit function is $\Pi = 10Q - Q^{3/2} - Q^{6/5} - cQ - d$ and the FOC is 
+   \[
+     \frac{3}{2} Q^{1/2} + \frac{6}{5}Q^{1/5} + c - 10 = 0 
+   \]
+   How do we solve this \textit{``by hand''}? Say $10 - c = 1 \Rightarrow c = 9$. Then, we can define $G(Q) \equiv \frac{3}{2} Q^{1/2} + \frac{6}{5}Q^{1/5} - 1$ and find $G(Q) = 0$.
+   \begin{itemize}
+    \item $G(0) = -1$
+    \item $G(1) = 1.7 > 0$
+   \end{itemize}
+   We know there exists some $q\in(0,1)$ such that $G(q) = 0$. But we cannot say much more analytically!
+ \end{solution}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Why do we need programming?}
+ \begin{solution}
+ In Matlab, we could find the solution with two lines of code: 
+ \end{solution} 
+ \begin{lstlisting}
+gq = @(q) (3/2) .* q.^(1/2) + (6/5) .* q.^(1/5) - 1;
+qopt = fzero(gq, 0.5);
+qopt = 
+      0.050915576865381714788405531635362
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Why do we need programming?}
+  
+  \begin{itemize}
+    \item Econometrics/Empirical analysis.
+    \item Applied general equilibrium.
+    \item Complement for theory. Substitute when looking at very complex models.
+    \item We will use Matlab but many things translate to other languages (e.g. Python, Julia, R\ldots).
+    \item Try to learn \alert{\textbf{concepts!}} 
+  \end{itemize}
+
 \end{frame}
 
 \section{First Time Opening Matlab}
@@ -255,6 +164,82 @@
     \caption{Matlab's Interface}
     \label{fig:matlab_interface}
 \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Working Directories}
+\begin{itemize}
+    \item For Matlab to find files and know where its working, it needs a \alert{\textbf{working directory}}.
+    \item A directory is a folder that has relationships to other folders.
+\end{itemize}
+\dirtree{%
+    .1 matlab-class.
+    .2 slides.
+    .2 codes.
+    .2 problem-sets.
+    .3 ps1.
+    .3 ps2.
+}
+\begin{itemize}
+    \item Say we want to run codes in the \verb;codes; subfolder. Then, we must \alert{\textbf{point to where}} the folder is.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Working Directories}
+\begin{columns}
+    \begin{column}{0.2\textwidth}
+        \dirtree{%
+            .1 matlab-class.
+            .2 slides.
+            .2 codes.
+            .2 problem-sets.
+            .3 ps1.
+            .3 ps2.
+        }
+    \end{column}
+    \begin{column}{0.8\textwidth}
+        \begin{itemize}
+            \item In this example \verb;matlab-class; is called the \alert{\textbf{parent directory}}.
+            \item But \verb;problem-sets; is the parent directory of \verb;ps1; and \verb;ps2;.
+            \item The \alert{\textbf{working directory}} refers to the directory on your computer that Matlab assumes is the starting place for all paths that you construct or try to access.
+        \end{itemize}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Paths}
+\begin{columns}
+    \begin{column}{0.2\textwidth}
+        \dirtree{%
+            .1 matlab-class.
+            .2 slides.
+            .2 codes.
+            .2 problem-sets.
+            .3 ps1.
+            .3 ps2.
+        }
+    \end{column}
+    \begin{column}{0.8\textwidth}
+        \begin{itemize}
+            \item Suppose \verb;matlab-class; is in \verb;C:\Users\Rafa\Documents\matlab-class\;.
+            \item That is called the \alert{\textbf{absolute path}}.
+            \item The absolute path of \verb;slides; is \verb;C:\Users\Rafa\Documents\matlab-class\slides\;.
+            \item The \alert{\textbf{relative path}} is a path relative to the working directory.
+            \item The relative path of \verb;ps1; would be \verb;./problem-sets/ps1/;.
+            \item Matlab understands relative paths.
+        \end{itemize}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{The Two Most Useful Commands}
+\begin{itemize}
+    \item If you make some mistake and need Matlab to stop, \verb;Ctrl+C; on the command window.
+    \item When you do not know how a command works or what it does, use \verb;help;.
+\end{itemize}
 \end{frame}
 
 \section{Scripts vs Command Window}
@@ -306,7 +291,7 @@ clc
 \begin{frame}
     \frametitle{Creating Variables}
     \begin{itemize}
-        \item We can assign \textit{values} to a variable.
+        \item We can \alert{\textbf{assign}} values to a variable.
         \item Matlab has several types of objects (arrays, struct arrays, cell arrays...)
         \item To name a variable the first character \alert{\textbf{needs to be a letter}}.
         \item Matlab is case sensitive $x \neq X$
@@ -346,6 +331,24 @@ x+7
 y = x^2;    % Semicolon ; suppresses output
 disp(y)
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Creating Variables}
+ \begin{lstlisting}
+ x = 3;
+ y = 4;
+ x = y;
+ y = 2;
+ \end{lstlisting}
+ \begin{itemize}
+  \item What is the value of \verb;x;?
+  \pause
+  \item The \verb;=; operator is an \alert{\textbf{assignment operator}}. 
+  \item In Matlab, $x = 4$ \alert{\textbf{not}} $2$, so it will not be equal to $y$ anymore. 
+  \item In some languages, this operator might tie $x$ and $y$ together. Always check!
+ \end{itemize}
+  
 \end{frame}
 
 \begin{frame}[fragile]
@@ -504,6 +507,30 @@ A(2,:)      % Index the 2nd row and all columns
 \end{frame}
 
 \begin{frame}[fragile]
+  \frametitle{Arrays --- Vectors and Matrices}
+ \begin{exercise}
+   Create the vectors $v_1 = [1, 2, 3]$ and $v_2 = \begin{bmatrix}
+   4 \\
+   5 \\ 
+   6
+   \end{bmatrix}$. Note that to transpose a matrix/vector you can use the apostrophe (\verb;';).
+   \begin{enumerate}
+    \item Concatenate $v_1$ and $v_2$ to create the matrix $M_1 = \begin{bmatrix}
+        1 & 4 \\
+        2 & 5 \\
+        3 & 6 
+    \end{bmatrix}$
+    \item Concatenate $v_1$ and $v_2$ to create the matrix $M_2 = \begin{bmatrix}
+        1 & 2 & 3 \\
+        4 & 5 & 6 
+    \end{bmatrix}$
+    \item Extract element in position $(2,2)$ of $M_1$ and $M_2$.
+   \end{enumerate} 
+ \end{exercise}
+  
+\end{frame}
+
+\begin{frame}[fragile]
     \frametitle{Arrays --- Operations}
     \begin{itemize}
         \item We can use the same operators described in Table \ref{tab:basic_operators} \alert{\textbf{BUT}} mind the laws of matrix algebra.
@@ -630,7 +657,7 @@ disp([x,x_oth,x_oth2])
 \alert{\textbf{Logical Operators}}
 \begin{itemize}
     \item Check wether one or more conditions are satisfied
-    \item Access elements that are \textbf{NOT} equal to $a$.
+    \item Access elements that are \alert{\textbf{NOT}} equal to $a$.
 \end{itemize}
 \end{frame}
 
@@ -756,13 +783,74 @@ end
 
 \begin{frame}[fragile]
     \frametitle{For and While Loops}
-Suppose we want to add one to a number for as long as it remains below a threshold. We can use \verb;while; loops!
+\begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{itemize}
+            \item Here \verb;t; is the \alert{\textbf{iterator variable}}.
+            \item The \alert{\textbf{range of the loop}} is given by the expression \verb;2:T;
+            \item So we know \verb;t; is going to take values \verb;2,3,4,5,6...;
+            \item Why do we do \verb;y = zeros(100,1); outside of the loop?
+        \end{itemize}
+    \end{column}
+\begin{column}{0.5\textwidth}
+\begin{lstlisting}
+T = 100;
+rho = 0.85;
+y = zeros(100,1);
+for t=2:T
+    y(t,1) = rho*y(t-1,1) + randn;
+end
+\end{lstlisting}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{For and While Loops}
+    \framesubtitle{Preallocation:}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item We want to store the values for \verb;y;.
+                \item And we know the size of this vector.
+                \item We could start with \verb;y[1]; and expand it with each iteration.
+                \item A better method is to \alert{\textbf{preallocate}} \verb;y;.
+            \end{itemize}
+        \end{column}
+    \begin{column}{0.5\textwidth}
+    \begin{lstlisting}
+    T = 100;
+    rho = 0.85;
+    y = zeros(100,1);
+    for t=2:T
+        y(t,1) = rho*y(t-1,1) + randn;
+    end
+    \end{lstlisting}
+    \end{column}
+    \end{columns}    
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{For and While Loops}
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        \begin{itemize}
+            \item Suppose we want to add one to a number for as long as it remains below a threshold. We can use \verb;while; loops!
+            \item We need a \alert{\textbf{condition}} to be satisfied.
+            \item Similar to an \verb;if; statement. If it is true, evaluate. Otherwise stop.
+            \item \alert{\textbf{Caution:}} the condition must become false, otherwise we get an infinite loop.
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
 \begin{lstlisting}
 a = 0;
 while a < 25
     a = a + 1;
 end
 \end{lstlisting}
+    \end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -896,6 +984,44 @@ function [wave] = my_wave(A,freq,lb,ub)
     title(['Sinusoidal wave with amplitude ', num2str(A), ' and frequency ', num2str(freq)])
 end
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Anonymous Functions}
+    \begin{itemize}
+      \item \href{https://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html}{Anonymous functions} are functions \alert{\textit{not stored in an}\texttt{.m} \textit{file}}.
+      \item These functions work within a script and they are stored in the workspace as \href{https://www.mathworks.com/help/matlab/ref/function_handle.html}{\texttt{function\_handle}} objects.
+      \item To create an anonymous function that multiplies a number by two:
+    \end{itemize}
+  \begin{lstlisting}
+  % Create the function
+  bytwo = @(x) 2*x;
+  % Call it
+  a = bytwo(10);
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Anonymous Functions}
+    \begin{itemize}
+        \item Note that these functions can contain only \alert{\textbf{one}} computable statement.
+        \item Typically:
+        \begin{itemize}
+            \item Used for functions in the mathematical sense.
+            \item Simple.
+            \item Can take multiple inputs.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Anonymous Functions}
+\begin{exercise}
+Write the Rosenbrock function as an anonymous function and plot it for $x\in[-2,2]$ and $y\in[-2,2]$. The Rosenbrock function is given by:
+\[
+f(x,y) = (1 - x)^2 + 100(y - x^2)^2    
+\]
+\end{exercise}
 \end{frame}
 
 \end{document}

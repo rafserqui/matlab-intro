@@ -1,157 +1,11 @@
 \documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
-
-% Add space in lists
-\let\toneitemize\itemize
-\let\ttwoitemize\enditemize
-\renewenvironment{itemize}{\toneitemize\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoitemize}
-
-\let\toneenumer\enumerate
-\let\ttwoenumer\endenumerate
-\renewenvironment{enumerate}{\toneenumer\addtolength{\itemsep}{0.7\baselineskip}}{\ttwoenumer}
-
-% Alert color
-\setbeamercolor{alerted text}{fg=DarkOrange}
-
-% Itemize w bullets
-\setbeamertemplate{itemize items}{$\circ$}
-
-% Font size of title
-\setbeamerfont{title}{size=\huge}
-
-% Transition section slides
-\setbeamertemplate{section page}
-{
-    \begin{centering}
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-        \setbeamerfont{section title}{size=\huge}
-        \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-    \end{centering}
-}
-
-%===========================================================
-% Color specifications
-%===========================================================
-\definecolor{GreyishBlue}{HTML}{087E8B} 	% Headings color
-\definecolor{CitationsBlue}{HTML}{2B6684} 	% Color for citations
-\definecolor{LinksPink}{HTML}{ff0054}       % Color for links
-
-% Template for syntax highlighting
-\definecolor{BeigeBackground}{HTML}{fdf6e3}
-\definecolor{BlueKeyWord}{HTML}{268bd2}
-
-\setbeamercolor{palette primary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette secondary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette tertiary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{palette quaternary}{bg=GreyishBlue,fg=white}
-\setbeamercolor{structure}{fg=GreyishBlue} % itemize, enumerate, etc
-\setbeamercolor{section in toc}{fg=GreyishBlue} % TOC sections
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{button}{bg=white, fg=GreyishBlue}
-
-%===========================================================
-% Numeration in environments
-%===========================================================
-\setbeamertemplate{theorems}[numbered]
-\setbeamertemplate{definitions}[numbered]
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{caption}[numbered]
-
-\usepackage{appendixnumberbeamer}
-
-%===========================================================
-% Language and font settings
-%===========================================================
-\usepackage[english,activeacute]{babel} % Language
-\usefonttheme{professionalfonts}		% Avoid overwriting fonts
-
-\usepackage[sfdefault,light]{FiraSans}
-\usepackage[utf8]{inputenc}				% Special symbols
-\usepackage[T1]{fontenc}				% T1 Encoding of font
-
-%===========================================================
-% Math font settings
-%===========================================================
-\usepackage{mathpazo}					% Math font
-\usepackage{amsmath,amsfonts,amssymb}	% Math symbols
-\usepackage{dsfont}						% Math symbols like R for reals...
-
-%===========================================================
-% References' colors and PDF properties
-%===========================================================
-\usepackage{hyperref}
-\hypersetup
-{
-    pdfauthor={Rafael Serrano Quintero},
-    pdfsubject={Introduction to Matlab},
-    colorlinks = {true},
-    linkcolor = {GreyishBlue},
-    citecolor = {LinksPink},
-    urlcolor = {LinksPink},
-    filecolor = {LinksPink}
-}
-%===========================================================
-% Additional packages
-%===========================================================
-\usepackage{graphicx}
-\usepackage{tikz}
-
-\usepackage{longtable}
-\usepackage{appendix}
-\usepackage{marvosym}
-\usepackage{enumerate} %For enumerating with letters with option [a)]
-\usepackage{epstopdf}
-\usepackage[round]{natbib}
-% Change manually the color of the parenthesis
-\bibpunct{\textcolor{CitationsBlue}{(}}{\textcolor{CitationsBlue}{)}}{,}{a}{}{;}
-
-\usepackage[flushleft]{threeparttable}
-\usepackage{booktabs}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{multicol}
-
-%========================================================================================
-% Syntax highlighting for Matlab
-%========================================================================================
-\usepackage{fancyvrb}  %To reduce font size in verbatim environment
-\usepackage{listings}
-
-
-\lstloadlanguages{Matlab}%
-\lstset{
-    language=Matlab,
-    basicstyle=\footnotesize\ttfamily,
-    backgroundcolor=\color{BeigeBackground}, 
-    breaklines=true,                 
-    captionpos=b,                    
-    commentstyle=\color{gray},   
-    frame=none,
-    keywordstyle=[1]\color{BlueKeyWord}\bfseries, % MATLAB functions bold and blue
-    keywordstyle=[2]\color{Purple},  % MATLAB function arguments purple
-    keywordstyle=[3]\color{Purple}\underbar,  % User functions underlined and blue      
-    stringstyle=\color{Purple},   
-    morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf,ones},
-    %Put MATLAB function parameters here
-    morekeywords=[2]{all, on, off, interp},
-    morecomment=[s]{\%\{}{\%\}},
-    numbers=left,                    
-    numbersep=3pt,                   
-    numberstyle=\tiny\color{black},
-    rulecolor=\color{black},        
-    showspaces=false,               
-    showstringspaces=false,          
-    showtabs=false,                  
-    stepnumber=1,                    
-    tabsize=2         
-}
-
-\newtheorem{exercise}{Exercise}
 %===========================================================
 % DOCUMENT
 %===========================================================
+\usepackage{rafa_style_beamer}  % Loads my formatting 
+
+\addbibresource{../matlab_intro.bib}
+
 \title{Introduction to Matlab}
 \subtitle{Lesson 02 --- Importing, manipulating, and fitting Data}
 
@@ -159,32 +13,6 @@
 
 \institute{Department of Economics \\ University of Barcelona}
 \date{}
-
-\AtBeginSection[]{\frame{\sectionpage}}
-\AtBeginSubsection[]{\frame{\subsectionpage}}
-
-\defbeamertemplate{section page}{mine}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{section title}\insertsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\defbeamertemplate{subsection page}{mine_sub}[1][]{%
-  \begin{centering}
-    {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}#1}
-    \vskip1em\par
-    \begin{beamercolorbox}[sep=12pt,center]{part title}
-      \usebeamerfont{subsection title}\insertsubsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-
-\setbeamertemplate{section page}[mine]
-\setbeamertemplate{subsection page}[mine_sub]
 
 \begin{document}
 
@@ -322,7 +150,8 @@ Plot the evolution over time for a particular country. Plot the two series in th
   \frametitle{Importing and Manipulating Data}
 How has it been for India?
 
-\begin{minipage}{0.45\textwidth}
+\begin{columns}
+\begin{column}{0.45\textwidth}
 \begin{lstlisting}
 % Plot the evolution for India
 years = 1960:1960+T-1;
@@ -336,15 +165,16 @@ hold on
 yyaxis right
 plot(years,urb_india,'-s')
 \end{lstlisting}
-\end{minipage}
-\begin{minipage}{0.45\textwidth}
+\end{column}
+\begin{column}{0.45\textwidth}
 \begin{figure}
   \centering
   \includegraphics[width = \textwidth]{../figures/india_gdp_urb.png}
   \caption{Real GDPpc and Urban Pop}
   \label{fig:india_evolution}
 \end{figure}
-\end{minipage}
+\end{column}
+\end{columns}
 \end{frame}
 
 \section{Fitting Data}
@@ -442,15 +272,13 @@ So, $\Delta urban = 1$ percentage point is associated with $\Delta GDPpc =  5.09
   \frametitle{Linear Regression --- Other Ways}
 \begin{itemize}
   \item What if we want standard errors, p-values \ldots ?
-  \item Fortunately, we do not need to compute them by hand.
-  \item We are going to see \href{https://www.mathworks.com/help/stats/fitlm.html?s_tid=doc_ta}{\texttt{fitlm}} and \href{https://www.mathworks.com/help/stats/linearmodel.html}{\texttt{LinearModel}}.
+  \item Fortunately, not by hand! (\href{https://www.mathworks.com/help/stats/fitlm.html?s_tid=doc_ta}{\texttt{fitlm}} and \href{https://www.mathworks.com/help/stats/linearmodel.html}{\texttt{LinearModel}})
   \item These are found within the \href{https://www.mathworks.com/help/stats/index.html?s_tid=CRUX_lftnav}{Statistics and Machine Learning Toolbox}.
   \item Alternatives:
   \begin{itemize}
     \item \href{https://www.mathworks.com/help/curvefit/fit.html?s_tid=doc_ta}{\texttt{fit}} from the \href{https://www.mathworks.com/help/curvefit/index.html?s_tid=CRUX_lftnav}{Curve Fitting Toolbox}
     \item \href{https://www.mathworks.com/help/stats/regress.html}{\texttt{regress}} from the \href{https://www.mathworks.com/help/stats/index.html?s_tid=CRUX_lftnav}{Statistics and Machine Learning Toolbox}
-    \item \href{https://www.spatial-econometrics.com/}{Spatial Econometrics Toolbox} by James P. LeSage.
-    \item Much more recommended for serious data work \href{https://www.r-project.org/}{R}, \href{https://www.stata.com/}{Stata}, \href{https://www.python.org/}{Python}
+    \item \href{https://www.spatial-econometrics.com/}{Spatial Econometrics Toolbox} by James P. LeSage. Much more recommended for serious data work are \href{https://www.r-project.org/}{R}, \href{https://www.stata.com/}{Stata}, \href{https://www.python.org/}{Python}
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -527,7 +355,7 @@ Let $f(x)$ be a continuous real-valued function defined on $[a,b]$. Then, given 
 \sup \lvert f(x) - p(x) \rvert < \varepsilon  
 \]
 \end{theorem}
-\textit{Informally:} any continuous function on $[a,b]$ can be approximated well by a polynomial function.
+\textit{Informally:} any continuous function on $[a,b]$ can be approximated well by a polynomial function of a sufficient degree.
 \end{frame}
 
 \begin{frame}
@@ -535,10 +363,10 @@ Let $f(x)$ be a continuous real-valued function defined on $[a,b]$. Then, given 
 \begin{itemize}
   \item Suppose, we have the following relationship between $y$ and $x$
   \[
-  y = \sin(5\times x^2 + \pi)
+  y = \sin(5x^2 + \pi)
   \]
   with $x\in\mathbb{R}$. Note that the function is continuous in $\mathbb{R}$.
-  \item But we do not know the relationship. Let us approximate by an $n-$degree polynomial using Matlab.
+  \item But we do not know the relationship (or it is very expensive to compute). Let us approximate by an $n-$degree polynomial.
   \item This is done with the commands \href{https://www.mathworks.com/help/matlab/ref/polyfit.html}{\texttt{polyfit}} and \href{https://www.mathworks.com/help/matlab/ref/polyval.html}{\texttt{polyval}} to fit and evaluate polynomials respectively. \footnotesize (How exactly are we fitting\ldots ?)
 \end{itemize}
 \end{frame}
@@ -573,7 +401,7 @@ p7 = polyfit(x,y,7);
 \begin{frame}
     \frametitle{Polynomial Fit}
 \begin{exercise}
-Simulate a variable $x$ in the interval $[-4,4]$ with $1000$ points. Generate a variable $y = x^2 + \varepsilon$ where $\varepsilon$ is white noise with standard  deviation $1.5$. Fit a second degree polynomial and plot the simulated data and the fitted polynomial on the same plot.
+  Generate a vector $x$ in the interval $[-4,4]$ with $1000$ points (\href{https://www.mathworks.com/help/matlab/ref/linspace.html}{\normalfont \texttt{linspace}}). Now, create the variable $y = x^2 + \varepsilon$ where $\varepsilon$ is white noise (\href{https://www.mathworks.com/help/matlab/ref/randn.html}{\normalfont\texttt{randn}}) with standard  deviation $1.5$. Fit a second degree polynomial and plot the simulated data and the fitted polynomial on the same plot.
 \end{exercise}
 \end{frame}
 
@@ -606,22 +434,6 @@ title('Polynomial Fit')
   \item \verb;polyfit; is exactly doing that but when $f(x,\beta)$ is a polynomial of degree $n$.
   \item We can extend that to \alert{\textbf{any}} nonlinear function easily.
 \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Nonlinear Least Squares --- Anonymous Functions}
-  \begin{itemize}
-    \item Before we dive into NLLS fitting, let's introduce \href{https://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html}{anonymous functions}.
-    \item We learned in previous lecture about user defined functions. Anonymous functions are functions \alert{\textit{not stored in an}\texttt{.m} \textit{file}}.
-    \item These functions work within a script and they are stored in the workspace as \href{https://www.mathworks.com/help/matlab/ref/function_handle.html}{\texttt{function\_handle}} objects.
-    \item To create an anonymous function that multiplies a number by two:
-  \end{itemize}
-\begin{lstlisting}
-% Create the function
-bytwo = @(x) 2*x;
-% Call it
-a = bytwo(10);
-\end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
