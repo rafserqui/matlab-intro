@@ -1,9 +1,9 @@
-% =========================================================
-%             === INTRODUCTION TO MATLAB ===
-% =========================================================
-% Rafael Serrano Quintero
-% September 2021
-% This code introduces Newton-Raphson's method to compute a minimum.
+%{
+Rafael Serrano Quintero
+September 2021
+
+This code introduces Newton-Raphson's method to compute a minimum.
+%}
 
 close all
 clear 

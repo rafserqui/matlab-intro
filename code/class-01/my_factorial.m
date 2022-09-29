@@ -1,16 +1,15 @@
-function y = my_factorial(n)
-%----------------------------------------------
-% Rafael Serrano Quintero
-% September 2021
-%----------------------------------------------
-% This function illustrates two ways of computing
-% the factorial in Matlab without the factorial()
-% function. Note that these two ways of computing
-% the factorial ARE NOT RECOMMENDED TO USE, they 
-% are just for illustration purposes. The built-in
-% function is optimized and constructed to avoid
-% errors.
+%{
+Rafael Serrano Quintero
+April 2021
 
+This function illustrates two ways of computing the factorial in Matlab
+without the factorial() function. Note that these two ways of computing the
+factorial ARE NOT RECOMMENDED TO USE, they are just for illustration
+purposes. The built-in function is optimized and constructed to avoid
+errors.
+%}
+
+function y = my_factorial(n)
     y = prod(1:n);
     
     

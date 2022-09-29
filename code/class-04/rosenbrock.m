@@ -1,11 +1,4 @@
 function [f, fgrad] = rosenbrock(x,a,b)
-%----------------------------------------------
-% Rafael Serrano Quintero
-% September 2021
-%----------------------------------------------
-% An implementation of the Rosenbrock function
-% with optional coefficients a and b. It also 
-% provides the gradient if asked for it.
     % Not necessary, but for clarity we unpack the two inputs
     x1 = x(1);
     x2 = x(2);

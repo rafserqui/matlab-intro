@@ -1,11 +1,13 @@
-% =========================================================
-%             === INTRODUCTION TO MATLAB ===
-% =========================================================
-% Rafael Serrano Quintero
-% September 2021
-% 
-% This code shows the first commands and introduction to follow during the
-% class.
+%{
+=========================================================
+            === INTRODUCTION TO MATLAB ===
+=========================================================
+Rafael Serrano Quintero
+April 2021
+
+This code shows the first commands and introduction to follow during the
+class.
+%}
 
 clear
 clc
@@ -23,6 +25,14 @@ disp(x+7)
 % Creating variable from another
 y = x^2;
 disp(y)
+
+% Assignment vs Equality
+x = 3;
+y = 4;
+x = y;
+y = 2;
+
+disp(x)
 
 % === Ex. 1: Solve Complex Operations === %
 x = [0;pi/4]; 
@@ -68,7 +78,13 @@ disp(A.*B)
 % Be careful with element wise multiplication. Check what would happen if:
 disp(rowV.*rowV2')
 
-% === Ex.2 Solve the system === %
+% === Ex. Concatenate Matrices === %
+v1 = [1 2 3];
+v2 = [4; 5; 6];
+M1 = [v1', v2];
+M2 = [v1; v2'];
+
+% === Ex. Solve the system === %
 b = [1; - 2; 0];
 A = [3 2 -1; 2 -2 4; -1 0.5 -1];
 x = inv(A)*b;   % Slower and inaccurate
@@ -121,7 +137,7 @@ end
 %==========================================================================
                     % === Loops and Conditionals === %
 %==========================================================================
-% === Ex. 5 List of students === %
+% === Ex. List of students === %
 nstudents = 200;
 grades = 10.*rand(nstudents,1);
 pass = ones(nstudents,1);
@@ -165,7 +181,7 @@ title('Sine versus Cosine')
 xlabel('$$x$$','Interpreter','latex')
 ylabel('$$F(x)$$','Interpreter','latex')
 
-% === Ex. 3 Sinusoidal Wave === %
+% === Ex.Sinusoidal Wave === %
 x = linspace(0,10,10000);
 F = sin(x);
 A = 4;              % Amplitude
@@ -185,7 +201,7 @@ xlabel('$$x$$','Interpreter','latex')
                             % === Functions === %
 %==========================================================================
 
-% === Ex. 4 Function for Sinusoidal Wave === %
+% === Ex. Function for Sinusoidal Wave === %
 A = 4;
 freq = 1/2;
 lb = 0;
@@ -199,3 +215,18 @@ toc
 tic 
 factorial(5)    % Matlab's function
 toc
+
+
+% === Anonymous Functions === %
+bytwo = @(x) 2*x;
+a = bytwo(10);
+
+% Rosenbrock Example
+rosen2d = @(x,y) (1 - x).^2 + 100.*(y - x.^2).^2;
+
+xvals = [1; 0; 1; 0];
+yvals = [1; 0; 0; 1];
+
+rosen2d(xvals, yvals)
+
+

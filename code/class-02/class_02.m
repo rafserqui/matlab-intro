@@ -1,17 +1,16 @@
-% =========================================================
-%             === INTRODUCTION TO MATLAB ===
-% =========================================================
-% Rafael Serrano Quintero
-% September 2021
-% This code shows deals with importing and manipulating data first, and with data fitting later. We cover linear and nonlinear regression.
-% 
-% Outline
-% ---------------------------------------------------------------------------
-% 1) Import Data and Manipulation
-% 2) Polynomial fit and Polynomial Evaluation
-% 3) Non-Linear Least Squares
-%     3.1) Anonymous functions
-%
+%{
+Rafael Serrano Quintero
+September 2021
+
+This code shows deals with importing and manipulating data first, and with data fitting later. We cover linear and nonlinear regression.
+
+Outline
+---------------------------------------------------------------------------
+1) Import Data and Manipulation
+2) Polynomial fit and Polynomial Evaluation
+3) Non-Linear Least Squares
+    3.1) Anonymous functions
+%}
 
 close all
 clear

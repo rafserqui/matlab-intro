@@ -1,10 +1,9 @@
-% =========================================================
-%             === INTRODUCTION TO MATLAB ===
-% =========================================================
-% Rafael Serrano Quintero
-% September 2021
+%{
+Rafael Serrano Quintero
+September 2021
 
-% This code introduces the bracketing method to compute a minimum.
+This code introduces the bracketing method to compute a minimum.
+%}
 
 close all
 clear 
