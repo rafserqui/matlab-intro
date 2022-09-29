@@ -1,4 +1,4 @@
-\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
+\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false,notheorems]{beamer}
 
 %===========================================================
 % DOCUMENT
@@ -123,107 +123,6 @@ Suppose $f(x)$ is continuous on $[a,b]\subseteq\mathbb{R}$ and $M$ in between $f
 \end{enumerate}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Bisection Method --- Stopping Criteria}
-\alert{\textbf{Criterion 1:}}
-\begin{itemize}
-  \item Parameter $\delta$ controls the \textit{``acceptable error''}.
-  \item Sometimes, computing $f(x)$ involves other numerical operations that add errors to the computation of $f$.
-  \item We should take that into account when choosing a value for $\delta$
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Bisection Method --- Stopping Criteria}
-\alert{\textbf{Criterion 2:}}
-\begin{itemize}
-  \item The size of the interval is too small whenever
-  \[
-  \frac{x^R - x^L}{(1 + \lvert x^L \rvert + \lvert x^R \rvert)} \leq \varepsilon
-  \]
-  \item No sense in choosing $\varepsilon = 0$, unachievable. Same for $\varepsilon = 10^{-130}$, computers store finite digits.
-  \item Bear in mind the sizes of $x^L$ and $x^R$. {\tiny If $x^L$ and $x^R$ are of the order $10^{10}$, convergence of $x^R-x^L < 10^{-5}$ is infeasible.}
-  \item Note that adding $1$ avoids problems when $x^R\approx x^L \approx 0$
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Bisection Method --- Stopping Criteria}
-\alert{\textbf{Criterion 3:}}
-\begin{itemize}
-  \item We can compute the minimum number of iterations $N$ to achieve accuracy $\delta$
-  \item We want the length of the interval after $N$ iterations lower than $\delta$
-  \[
-  \frac{x^R - x^L}{2^N} \leq \delta \Rightarrow 2^N \geq \frac{x^R - x^L}{\delta}
-  \]
-  taking logs on both sides and simplifying
-  \[
-  N\geq \frac{\log(x^R - x^L) - \log(\delta)}{\log(2)}  
-  \]
-  which depends on the length of the interval $[x^L, x^R]$ and the value of $\delta$
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Bisection Method --- Example}
-Compute the positive root of $f(x) = x^3 - 6x^2 + 11x - 6$
-\begin{enumerate}
-  \item Find the interval $[x^L, x^R]$
-  \item The function has three positive roots, let's focus on the one on the interval $[2.5, 4]$
-  \item Note $f(2.5)f(4) = -2.25 < 0 \Rightarrow$ by IVT there is a root in $[2.5, 4]$
-  \item Choose $\delta = 10^{-4}$ and $\varepsilon = 10^{-8}$
-  \item The minimum number of iterations needed to achieve accuracy $\delta$ is $N^{min} = 13.8$, choose $N = N^{min} + 50$
-\end{enumerate}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bisection Method --- The Actual Code}
-  \begin{itemize}
-    \item Initialize with a \verb;while; loop with three conditionals
-\begin{lstlisting}
-while (error_f > delta) && (error_i > epsil) && (it < maxit)
-% Actual algorithm in here
-end     
-\end{lstlisting}
-    \item Middle steps
-\begin{lstlisting}
-% Compute xm
-xm = xl + (xr - xl) / 2; % Slightly improves performance
-
-% Compute value of f at xm
-fxm = myf(xm);
-
-% Compute bounds values of f
-fxl = myf(xl);
-fxr = myf(xr);
-\end{lstlisting}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bisection Method --- The Actual Code}
-\begin{itemize}
-  \item Compute errors
-\begin{lstlisting}
-% Compute errors
-error_f = abs(fxm);
-error_i = (xr - xl)./(1 + abs(xl) + abs(xr));
-\end{lstlisting}
-\item Update iteration counter and refine interval
-\begin{lstlisting}
-% Update iteration counter
-it = it + 1;
-
-% Update if necessary
-if fxm*fxl < 0
-    xr = xm;
-else
-    xl = xm;
-end
-\end{lstlisting}
-\end{itemize}
-\end{frame}
 
 \subsection{Newton-Raphson Method}
 
@@ -253,29 +152,9 @@ A number $c$ is a \alert{\textbf{fixed point}} of $g(x)$ if $g(c) = c$.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Newton-Raphson --- Existence, Uniqueness, and Convergence}
-\begin{theorem}[Fixed-Point Iteration Theorem]\label{thm:fixed_point}
-Let $f(x) = 0$ be written as $x = g(x)$. Let $g(x)$ satisfy:
-\begin{enumerate}
-  \item $\forall x\in [a,b], g(x)\in [a,b]$
-  \item $g'(x)\in (a, b)$ and, for $q\in(0,1)$, $g'(x)$ satisfies $\lvert g'(x) \rvert < q$ for all $x\in (a,b)$
-\end{enumerate}
-then
-\begin{enumerate}
-  \item $\exists! c\in(a,b) : g(c) = c$ {\footnotesize \alert{\textbf{(Existence of a unique solution)}}}
-  \item For any $x_0\in [a, b]$, the sequence $\{x_k\}$ defined by
-  \[
-  x_{k+1} = g(x_k) \ , \ k = 0,1,\ldots
-  \]
-  converges to the fixed point $c = g(c)$, that is to the root $c$ of $f(x) = 0$.
-\end{enumerate}
-\end{theorem}
-\end{frame}
-
-\begin{frame}
   \frametitle{Newton-Raphson --- Preliminaries}
 \begin{itemize}
-  \item In practice, verifying Assumption 1 in Theorem \ref{thm:fixed_point} is not easy.
+  \item We can know existence, uniqueness, and convergence (see Theorem \ref{thm:fixed_point}). However, verifying Assumption 1 is not easy.
   \item This method chooses $g(x)$ as $g(x) = x - \frac{f(x)}{f'(x)}$ and the iteration scheme is:
   \begin{equation}
   x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)} \label{eqn:newton_iteration}
@@ -349,52 +228,6 @@ p(x) = f(x_k) + (x - x_k)f'(x_k)
 \end{frame}
 
 \begin{frame}
-  \frametitle{Newton-Raphson Method --- Example}
-As with the bisection method, let's compute the root of $f(x) = x^3 - 6x^2 + 11x - 6$ in the interval $[2.5, 4]$. Keep the same stopping criteria parameters.
-\begin{enumerate}
-  \item Choose $N = 64, \delta = 10^{-4},$ and $\varepsilon = 10^{-8}$
-  \item Choose $x_0 = 2.65$.
-\end{enumerate}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Newton-Raphson Method --- The Actual Code}
-  \begin{itemize}
-    \item Initialize with a \verb;while; loop with three conditionals as in bisection
-\begin{lstlisting}
-while (error_f > delta) && (error_i > epsil) && (it < maxit)
-% Actual algorithm in here
-end     
-\end{lstlisting}
-    \item Middle steps
-\begin{lstlisting}
-% Compute next guess
-xkp = xk - myf(xk) ./ fprime(xk);
-    
-% Compute the errors at current guess
-error_f = abs(myf(xk));
-error_i = abs(xk - xkp) ./ (1 + abs(xkp));
-
-% Update iteration counter and guess
-it = it+1;
-xk = xkp;
-\end{lstlisting}
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Newton-Raphson vs Bisection}
-\begin{itemize}
-  \item In previous example, it took $14$ iterations for the bisection method to find a solution.
-  \item It took Newton-Raphson \alert{\textbf{half}} of those. In $7$ iterations it was done.
-  \item Both achieved the same solution.
-  \item Note that the first guess for bisection yields $x^M = 3.25$. If we start Newton-Raphson with that guess, only $4$ iterations are needed.
-  \item If we give Newton-Raphson $x_0 = 2.5$, we end up in the root $x^* = 1$.
-  \item Both methods have pros and cons. It depends on the problem which one to choose.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{Root Finding in Matlab}
 \begin{itemize}
   \item We have learned two very powerful methods to find roots
@@ -403,6 +236,69 @@ xk = xkp;
   \item Another function is \href{https://www.mathworks.com/help/matlab/ref/roots.html}{\texttt{roots}} which finds the roots of polynomials.
   \item Familiarize yourselves with these functions and compare them with the methods we have implemented.
 \end{itemize}
+\end{frame}
+
+\subsection{Solving Equations in Practice}
+
+\begin{frame}[c]
+  \frametitle{Example --- Arrow-Debreu Equilibrium}
+  \begin{itemize}
+    \item Say we have two agents $A$ and $B$, and two goods $1$ and $2$. The preferences of the agents are
+      \[
+        u_A(x_{1,A}, x_{2,A}) = \left( x_{1,A} \right)^{\alpha} \left( x_{2,A} \right)^{1 - \alpha} \qquad u_B(x_{1,B}, x_{2,B}) = \left( x_{1,B} \right)^{\beta} \left( x_{2,B} \right)^{1 - \beta}
+      \]
+    \item Their initial endowments are $\{\omega_{1,i}, \omega_{2,i}\}$
+    \item In equilibrium, it must be that $m_i = p_1 \omega_{1,i} + p_2\omega_{2,i}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Example --- Arrow-Debreu Equilibrium}
+ \begin{itemize}
+  \item The demand functions are given by:
+  \begin{align}
+    x_{1,A}\left( p_1, p_2, m_A \right) & = \alpha\frac{m_A}{p_1} \label{eq:demand_1A} \\
+    x_{2,A}\left( p_1, p_2, m_A \right) & = \left( 1 - \alpha \right)\frac{m_A}{p_2} \label{eq:demand_2A} \\ 
+    x_{1,B}\left( p_1, p_2, m_B \right) & = \beta\frac{m_B}{p_1} \label{eq:demand_1B} \\
+    x_{2,B}\left( p_1, p_2, m_B \right) & = \left( 1 - \beta \right)\frac{m_B}{p_2}  \label{eq:demand_2B}
+  \end{align}
+  \item Define the excess demand for goods $1$ and $2$ as 
+    \begin{align}
+      z_1(p_1, p_2) & = x_{1,A}\left( p_1, p_2, m_A \right) + x_{1,B}\left( p_1, p_2, m_B \right) - \omega_{1,A} - \omega_{1,B} \\
+      z_2(p_2, p_2) & = x_{2,A}\left( p_2, p_2, m_A \right) + x_{2,B}\left( p_2, p_2, m_B \right) - \omega_{2,A} - \omega_{2,B}
+    \end{align}
+ \end{itemize} 
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Example --- Arrow-Debreu Equilibrium}
+    \begin{align*}
+      z_1(p_1, p_2) & = x_{1,A}\left( p_1, p_2, m_A \right) + x_{1,B}\left( p_1, p_2, m_B \right) - \omega_{1,A} - \omega_{1,B} \\
+      z_2(p_2, p_2) & = x_{2,A}\left( p_2, p_2, m_A \right) + x_{2,B}\left( p_2, p_2, m_B \right) - \omega_{2,A} - \omega_{2,B}
+    \end{align*}
+\begin{itemize}
+  \item Substituting the demand functions \eqref{eq:demand_1A}-\eqref{eq:demand_2B} and dividing by $p_2$ (we only care about relative prices, check Walras' Law if you don't see this).
+\end{itemize}
+\begin{gather*}
+  z_1(p_1, 1) = \alpha \frac{p_1\omega_{1,A} + \omega_{2,A}}{p_1} + \beta \frac{p_1\omega_{1,B} + \omega_{2,B}}{p_1} - \omega_{1,A} - \omega_{1,B} \\
+  z_2(p_1, 1) = (1 - \alpha) \left(p_1\omega_{1,A} + \omega_{2,A}\right) + (1 - \beta) \left(p_1\omega_{1,B} + \omega_{2,B}\right) - \omega_{2,A} - \omega_{2,B}
+\end{gather*}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Example --- Arrow-Debreu Equilibrium}
+\begin{gather}
+  z_1(p_1, 1) = \alpha \frac{p_1\omega_{1,A} + \omega_{2,A}}{p_1} + \beta \frac{p_1\omega_{1,B} + \omega_{2,B}}{p_1} - \omega_{1,A} - \omega_{1,B} \\
+  z_2(p_1, 1) = (1 - \alpha) \left(p_1\omega_{1,A} + \omega_{2,A}\right) + (1 - \beta) \left(p_1\omega_{1,B} + \omega_{2,B}\right) - \omega_{2,A} - \omega_{2,B}
+\end{gather}
+\begin{itemize}
+  \item An equilibrium is then a price $p_1$ such that $z_1(p_1,1) = z_2(p_2,1) = 0$. 
+  \item We can use any of the two to get the solution for $p_1$. 
+  \item The analytical solution is 
+\end{itemize}
+\[
+  p_1^* = \frac{\alpha\omega_{2,A} + \beta\omega_{2,B}}{(1 - \alpha)\omega_{1,A} + (1 - \beta)\omega_{1,B}} 
+\]
 \end{frame}
 
 \section{Basics of Numerical Differentiation}
@@ -680,6 +576,180 @@ end
   \item Another routine is \href{https://www.mathworks.com/help/matlab/ref/integral.html}{\texttt{integral}}.
   \item The latter uses adaptive quadratures. Basically, adapts the subintervals refining the process. But the quadrature rules can still be Newton-Cotes.
   \item For double and triple integrals, Matlab has \href{https://www.mathworks.com/help/matlab/ref/integral2.html}{\texttt{integral2}} and \href{https://www.mathworks.com/help/matlab/ref/integral3.html}{\texttt{integral3}} respectively.
+\end{itemize}
+\end{frame}
+
+\section{Details on Solution Methods}
+
+\subsection{Details on Bisection Method}
+
+\begin{frame}
+  \frametitle{Bisection Method --- Stopping Criteria}
+\alert{\textbf{Criterion 1:}}
+\begin{itemize}
+  \item Parameter $\delta$ controls the \textit{``acceptable error''}.
+  \item Sometimes, computing $f(x)$ involves other numerical operations that add errors to the computation of $f$.
+  \item We should take that into account when choosing a value for $\delta$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Bisection Method --- Stopping Criteria}
+\alert{\textbf{Criterion 2:}}
+\begin{itemize}
+  \item The size of the interval is too small whenever
+  \[
+  \frac{x^R - x^L}{(1 + \lvert x^L \rvert + \lvert x^R \rvert)} \leq \varepsilon
+  \]
+  \item No sense in choosing $\varepsilon = 0$, unachievable. Same for $\varepsilon = 10^{-130}$, computers store finite digits.
+  \item Bear in mind the sizes of $x^L$ and $x^R$. {\tiny If $x^L$ and $x^R$ are of the order $10^{10}$, convergence of $x^R-x^L < 10^{-5}$ is infeasible.}
+  \item Note that adding $1$ avoids problems when $x^R\approx x^L \approx 0$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bisection Method --- Stopping Criteria}
+\alert{\textbf{Criterion 3:}}
+\begin{itemize}
+  \item We can compute the minimum number of iterations $N$ to achieve accuracy $\delta$
+  \item We want the length of the interval after $N$ iterations lower than $\delta$
+  \[
+  \frac{x^R - x^L}{2^N} \leq \delta \Rightarrow 2^N \geq \frac{x^R - x^L}{\delta}
+  \]
+  taking logs on both sides and simplifying
+  \[
+  N\geq \frac{\log(x^R - x^L) - \log(\delta)}{\log(2)}  
+  \]
+  which depends on the length of the interval $[x^L, x^R]$ and the value of $\delta$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bisection Method --- Example}
+Compute the positive root of $f(x) = x^3 - 6x^2 + 11x - 6$
+\begin{enumerate}
+  \item Find the interval $[x^L, x^R]$
+  \item The function has three positive roots, let's focus on the one on the interval $[2.5, 4]$
+  \item Note $f(2.5)f(4) = -2.25 < 0 \Rightarrow$ by IVT there is a root in $[2.5, 4]$
+  \item Choose $\delta = 10^{-4}$ and $\varepsilon = 10^{-8}$
+  \item The minimum number of iterations needed to achieve accuracy $\delta$ is $N^{min} = 13.8$, choose $N = N^{min} + 50$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Bisection Method --- The Actual Code}
+  \begin{itemize}
+    \item Initialize with a \verb;while; loop with three conditionals
+\begin{lstlisting}
+while (error_f > delta) && (error_i > epsil) && (it < maxit)
+% Actual algorithm in here
+end     
+\end{lstlisting}
+    \item Middle steps
+\begin{lstlisting}
+% Compute xm
+xm = xl + (xr - xl) / 2; % Slightly improves performance
+
+% Compute value of f at xm
+fxm = myf(xm);
+
+% Compute bounds values of f
+fxl = myf(xl);
+fxr = myf(xr);
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Bisection Method --- The Actual Code}
+\begin{itemize}
+  \item Compute errors
+\begin{lstlisting}
+% Compute errors
+error_f = abs(fxm);
+error_i = (xr - xl)./(1 + abs(xl) + abs(xr));
+\end{lstlisting}
+\item Update iteration counter and refine interval
+\begin{lstlisting}
+% Update iteration counter
+it = it + 1;
+
+% Update if necessary
+if fxm*fxl < 0
+    xr = xm;
+else
+    xl = xm;
+end
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{Details on Newton-Raphson Method}
+
+\begin{frame}
+  \frametitle{Newton-Raphson --- Existence, Uniqueness, and Convergence}
+\begin{theorem}[Fixed-Point Iteration Theorem]\label{thm:fixed_point}
+Let $f(x) = 0$ be written as $x = g(x)$. Let $g(x)$ satisfy:
+\begin{enumerate}
+  \item $\forall x\in [a,b], g(x)\in [a,b]$
+  \item $g'(x)\in (a, b)$ and, for $q\in(0,1)$, $g'(x)$ satisfies $\lvert g'(x) \rvert < q$ for all $x\in (a,b)$
+\end{enumerate}
+then
+\begin{enumerate}
+  \item $\exists! c\in(a,b) : g(c) = c$ {\footnotesize \alert{\textbf{(Existence of a unique solution)}}}
+  \item For any $x_0\in [a, b]$, the sequence $\{x_k\}$ defined by
+  \[
+  x_{k+1} = g(x_k) \ , \ k = 0,1,\ldots
+  \]
+  converges to the fixed point $c = g(c)$, that is to the root $c$ of $f(x) = 0$.
+\end{enumerate}
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Newton-Raphson Method --- Example}
+As with the bisection method, let's compute the root of $f(x) = x^3 - 6x^2 + 11x - 6$ in the interval $[2.5, 4]$. Keep the same stopping criteria parameters.
+\begin{enumerate}
+  \item Choose $N = 64, \delta = 10^{-4},$ and $\varepsilon = 10^{-8}$
+  \item Choose $x_0 = 2.65$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Newton-Raphson Method --- The Actual Code}
+  \begin{itemize}
+    \item Initialize with a \verb;while; loop with three conditionals as in bisection
+\begin{lstlisting}
+while (error_f > delta) && (error_i > epsil) && (it < maxit)
+% Actual algorithm in here
+end     
+\end{lstlisting}
+    \item Middle steps
+\begin{lstlisting}
+% Compute next guess
+xkp = xk - myf(xk) ./ fprime(xk);
+    
+% Compute the errors at current guess
+error_f = abs(myf(xk));
+error_i = abs(xk - xkp) ./ (1 + abs(xkp));
+
+% Update iteration counter and guess
+it = it+1;
+xk = xkp;
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Newton-Raphson vs Bisection}
+\begin{itemize}
+  \item In previous example, it took $14$ iterations for the bisection method to find a solution.
+  \item It took Newton-Raphson \alert{\textbf{half}} of those. In $7$ iterations it was done.
+  \item Both achieved the same solution.
+  \item Note that the first guess for bisection yields $x^M = 3.25$. If we start Newton-Raphson with that guess, only $4$ iterations are needed.
+  \item If we give Newton-Raphson $x_0 = 2.5$, we end up in the root $x^* = 1$.
+  \item Both methods have pros and cons. It depends on the problem which one to choose.
 \end{itemize}
 \end{frame}
 

@@ -1,4 +1,4 @@
-\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
+\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false,notheorems]{beamer}
 %===========================================================
 % DOCUMENT
 %===========================================================
@@ -249,7 +249,7 @@ years_vec = years_vec(~tot_miss);
 Necessary steps:
 \begin{enumerate}
   \setcounter{enumi}{2}
-  \item Construct $X$ and compute $\hat{\beta}$
+  \item Construct $X$ and compute $\hat{\beta} = (X'X)^{-1}X'y$
 \end{enumerate}
 \begin{lstlisting}
 % Create matrix X

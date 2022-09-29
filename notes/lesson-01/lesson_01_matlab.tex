@@ -1,4 +1,4 @@
-\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false]{beamer}
+\documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false,notheorems]{beamer}
 %===========================================================
 % DOCUMENT
 %===========================================================
@@ -130,9 +130,7 @@
 
 \begin{frame}[fragile]
   \frametitle{Why do we need programming?}
- \begin{solution}
- In Matlab, we could find the solution with two lines of code: 
- \end{solution} 
+  \textit{In Matlab, we could find the solution with two lines of code:}
  \begin{lstlisting}
 gq = @(q) (3/2) .* q.^(1/2) + (6/5) .* q.^(1/5) - 1;
 qopt = fzero(gq, 0.5);
@@ -372,7 +370,7 @@ disp(y)
 \end{table}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
     \frametitle{Matlab as a Calculator}
 \begin{exercise} 
     Use Matlab as a calculator and try to solve the following operations using the functions needed. Solve them for $x = 0$ and $x = \frac{\pi}{4}$
@@ -380,6 +378,7 @@ disp(y)
     \[
             \frac{\left(\ln\big( 1+x^2\big)\right)^2 - \sqrt{1+\sqrt[3]{x^2}\,}}{1+\sin^2 x} \ ; \  \ln\bigg\lvert\frac{x-\pi}{x+\pi}\bigg\rvert + \sqrt{\frac{e^x}{1+xe^x}}
     \]
+    \textit{\underline{Hint:}} Check commands \verb;log;, \verb;sqrt;, \verb;sin;, \verb;abs;, \verb;pi;
 \end{exercise}
 \end{frame}
 
@@ -397,6 +396,8 @@ disp(y)
     op2 = log(abs((x-pi)/(x+pi)))+sqrt(exp(x)/(1+x*exp(x)));
 \end{lstlisting}
 \end{frame}
+
+\section{Arrays}
 
 \begin{frame}[fragile]
     \frametitle{Arrays --- Vectors and Matrices}
@@ -1017,7 +1018,7 @@ end
 \begin{frame}
     \frametitle{Anonymous Functions}
 \begin{exercise}
-Write the Rosenbrock function as an anonymous function and plot it for $x\in[-2,2]$ and $y\in[-2,2]$. The Rosenbrock function is given by:
+Write the Rosenbrock function as an anonymous function and compute the value of $f(1,1), f(0,0), f(1,0)$, and $f(0,1)$. The Rosenbrock function is given by:
 \[
 f(x,y) = (1 - x)^2 + 100(y - x^2)^2    
 \]
