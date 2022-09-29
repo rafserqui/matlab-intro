@@ -107,18 +107,6 @@ The function should return the vector $y_t$.
 \end{exercise}
 
 \begin{exercise}
-Read about \href{https://en.wikipedia.org/wiki/Recursion_(computer_science)}{recursion}. Recall the Fibonacci sequence is defined as
-\[
-F_n = F_{n-1} + F_{n-2}  \ \text{ where } \ F_0 = 0, F_1 = 1
-\]
-\begin{enumerate}
-    \item Write a function \verb;fibonacci; that takes as input an integer $n\geq 1$ and returns the value of $F_n$.
-    \item Write a function \verb;fibonacci_recursive; in a recursive way.
-    \item Using \href{https://www.mathworks.com/help/matlab/ref/tic.html}{\texttt{tic} and \texttt{toc}} report the relative time for $n = \{10,30,50\}$.
-\end{enumerate}
-\end{exercise}
-
-\begin{exercise}
 Create a function \verb;my_polynomial; that evaluates a polynomial of degree $n$ given its coefficients. That is, let a polynomial $p(x)$ be defined as:
 
 \[
@@ -132,7 +120,7 @@ Write a function that takes as inputs a vector of coefficients $a_i$ and a value
 Download the series for real GDP per capita in quarterly basis from the Federal Reserve Bank of St. Louis (you can download them from \href{https://fred.stlouisfed.org/series/A939RX0Q048SBEA}{here}). The purpose of this exercise is that you familiarize yourself with extracting data from files and manipulate it in Matlab. Start this exercise in a new script, start by clearing the workspace and the command window.
 
 \begin{enumerate}
-	\item As a zero step, input the data as a variable called $Y_t$, and take the length of the series as a variable $T$. Compute also the growth rate of GDP per capita in this step and save it as another variable, for example $g_Y$.
+  \item As a zero step, input the data as a variable called $Y_t$ (in Matlab, \verb;Yt;), and take the length of the series as a variable $T$ (\verb;T;). Compute also the growth rate of GDP per capita in this step and save it as another variable, for example $g_Y$ (\verb;gY;). Compute the growth rate as the difference in logs.
 	\item First, suppose we want to just fit a time trend. To do so, suppose the model we have for the evolution of output is:
 	\begin{equation}
 	Y_t = e^{\phi_1 t + \phi_2} + \varepsilon_t \ ; \ \varepsilon_t \underset{iid}{\thicksim} \mathcal{N}(0,\sigma^2_{\varepsilon})

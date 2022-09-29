@@ -90,44 +90,17 @@ University of Barcelona \\}
 \maketitle
 
 \begin{exercise}
-Given
-\[
-f(x) = x^{1/3}e^{-x^2}
-\]
-
-\begin{enumerate}
-    \item Show theoretically that if we start from an initial guess $x_0$ close to $x^*$ where $f(x^*) = 0$, Newton-Raphson method diverges.
-    \item Show in the computer that, with each iteration, the method in fact diverges. Note that $\displaystyle\lim_{x\rightarrow +\infty}f(x) = 0$ but this is an asymptote!
-\end{enumerate}
-\end{exercise}
-
-\begin{exercise}
-Write a function that computes the trapezoid rule for integration. The function should take as inputs the lower and upper bounds of the interval $a$ and $b$, the number of points on which to approximate the function $n$, and a function handle.
-\begin{enumerate}
-    \item Use your function to compute
-    \[
-    \int^5_1 x^2 dx \ \text{ and } \ \int^{74}_{23} \log(x) dx
-    \]
-    with $n = \{1,2,\ldots,35\}$ and report the relative errors in $\log_{10}$ units as a function of $n$. If the true value of the integral is $v$ and your estimate is $\hat{v}$, the relative error should be
-    \[
-    \xi = \log_{10}\left(\frac{\lvert v - \hat{v}\rvert}{\lvert \hat{v}\rvert}\right)
-    \]
-    \item Compare your results with the function \verb;trapz; from Matlab in terms of errors. Report a plot of the errors $\xi$ as a function of $n$ for your function and Matlab's and compute $\lVert \xi^M - \xi \rVert$ where $\xi^M$ are the errors from \verb;trapz;.
-\end{enumerate}
-\end{exercise}
-
-\begin{exercise}
-Given the function 
-
-\[
-f(x) = x^2 - \log\left(\frac{x^2}{3}\right)
-\]
-
-\begin{enumerate}
-    \item Find a minimum of the function using the bracketing method. State clearly which initial triplet $(a,b,c)$ you start with and what solution you find.
-    \item Find a minimum of the function using \verb;fminsearch; with initial condition $x_0 = \pm 2$.
-    \item Compare the two procedures.
-\end{enumerate}
+  Following the example for the computation of the Arrow-Debreu equilibrium, assume now that the utility functions are 
+  \[
+    u_A(x_{1,A}, x_{1,A}) = \left[ \alpha x_{1,A}^{\rho} + (1 - \alpha) x_{2,A}^{\rho} \right]^{\frac{1}{\rho} } \qquad 
+    u_A(x_{1,B}, x_{2,B}) = \left[ \beta x_{1,B}^{\rho} + (1 - \beta) x_{2,B}^{\rho} \right]^{\frac{1}{\rho} }
+  \]
+  \begin{enumerate}
+    \item Compute analytically the optimal demands and the excess demand functions. 
+    \item Create a function in Matlab that gives the excess demand for good 1. 
+    \item Using \verb;fzero; find the equilibrium price for $\alpha = 0.25, \beta = 0.75, \rho = 0.25, \omega_{1,A} = 10, \omega_{2,A} = 15, \omega_{1,B} = 15,$ and $\omega_{2,B} = 10$. Verify that the excess demand is, in fact, $0$ or close to $0$.
+    \item Keeping all the parameters the same, how does the solution change if $\rho = 1.5$?
+  \end{enumerate}
 \end{exercise}
 
 \begin{exercise}
@@ -138,9 +111,9 @@ U(c_1, c_2) = \sqrt{c_1} + 2\sqrt{c_2}
 Assume the consumer spends all her income in the two goods.
 \begin{enumerate}
     \item State this maximization problem of two variables as a \textbf{minimization problem in one variable}. \underline{Hint:} Define the proportion spent on $c_1$ as $\phi$ and make a change of variables.
-    \item Solve this problem by hand.
-    \item Solve this problem as a problem in one variable using the bracketing method. How can you find the initial triplet $(a,b,c)$ \textbf{without} the routine explained in class? 
-    \item Solve this problem as a problem in one variable using the Newton-Raphson method. Give a reasoning for your choice of the initial guess.
+    \item Solve this problem by hand and find the analytical solution for $\phi$.
+    \item Solve this problem by finding the solution of the first order conditions using \verb;fzero;.
+    \item Solve this problem as an optimization problem using \verb;fmincon;.
     \item Compare the results of both methods with the true solution, the number of iterations needed, and the tolerance set.
 \end{enumerate}
 \end{exercise}
@@ -171,8 +144,59 @@ has a constant elasticity of substitution $\sigma$ and nests three particular ca
 \end{itemize}
 
 \begin{enumerate}
-    \item Write a function that takes four inputs, the elasticity $\sigma$, the distribution parameter $\alpha$, a vector of values for $K$ and a vector of values for $L$. The function should distinguish the three four different cases \eqref{eqn:ces_function}, \eqref{eqn:linear}, \eqref{eqn:cobb_douglas}, \eqref{eqn:leontief}. Show in a \verb;subplot; the three different cases with a $3-$D figure. \underline{Hint:} You might want to check \href{https://www.mathworks.com/help/matlab/ref/surf.html}{\texttt{surf}} command.
+    \item Write a function that takes four inputs, the elasticity $\sigma$, the distribution parameter $\alpha$, a vector of values for $K$ and a vector of values for $L$. The function should distinguish the four different cases \eqref{eqn:ces_function}, \eqref{eqn:linear}, \eqref{eqn:cobb_douglas}, \eqref{eqn:leontief}. Show in a \verb;subplot; the four different cases with a $3-$D figure. \underline{Hint:} You might want to check \href{https://www.mathworks.com/help/matlab/ref/surf.html}{\texttt{surf}} command.
     \item Show numerically (preferably with a plot) that as $\sigma$ goes to $\{0, 1, \infty\}$ the CES approaches each case. \underline{Hint:} it might be easier to rewrite the function in intensive form, i.e. divide by $L$ and define $k = K/L$. Recall that the CES is homogeneous of degree $1$.
+\end{enumerate}
+\end{exercise}
+
+
+
+\newpage
+
+\section{Optional Exercises}
+
+The following exercises are not mandatory. However, extra credit will be granted for those who attempt to solve them.
+
+\begin{exercise}{\textbf{(Optional)}}
+Given
+\[
+f(x) = x^{1/3}e^{-x^2}
+\]
+
+\begin{enumerate}
+    \item Show theoretically that if we start from an initial guess $x_0$ close to $x^*$ where $f(x^*) = 0$, Newton-Raphson method diverges.
+    \item Show in the computer that, with each iteration, the method in fact diverges. Note that $\displaystyle\lim_{x\rightarrow +\infty}f(x) = 0$ but this is an asymptote!
+\end{enumerate}
+\end{exercise}
+
+
+\begin{exercise}{\textbf{(Optional)}}
+Write a function that computes the trapezoid rule for integration. The function should take as inputs the lower and upper bounds of the interval $a$ and $b$, the number of points on which to approximate the function $n$, and a function handle.
+\begin{enumerate}
+    \item Use your function to compute
+    \[
+    \int^5_1 x^2 dx \ \text{ and } \ \int^{74}_{23} \log(x) dx
+    \]
+    with $n = \{1,2,\ldots,35\}$ and report the relative errors in $\log_{10}$ units as a function of $n$. If the true value of the integral is $v$ and your estimate is $\hat{v}$, the relative error should be
+    \[
+    \xi = \log_{10}\left(\frac{\lvert v - \hat{v}\rvert}{\lvert \hat{v}\rvert}\right)
+    \]
+    \item Compare your results with the function \verb;trapz; from Matlab in terms of errors. Report a plot of the errors $\xi$ as a function of $n$ for your function and Matlab's and compute $\lVert \xi^M - \xi \rVert$ where $\xi^M$ are the errors from \verb;trapz;.
+\end{enumerate}
+\end{exercise}
+
+
+\begin{exercise}{\textbf{(Optional)}}
+Given the function 
+
+\[
+f(x) = x^2 - \log\left(\frac{x^2}{3}\right)
+\]
+
+\begin{enumerate}
+    \item Find a minimum of the function using the bracketing method. State clearly which initial triplet $(a,b,c)$ you start with and what solution you find.
+    \item Find a minimum of the function using \verb;fminsearch; with initial condition $x_0 = \pm 2$.
+    \item Compare the two procedures.
 \end{enumerate}
 \end{exercise}
 
