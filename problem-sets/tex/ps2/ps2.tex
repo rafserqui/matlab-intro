@@ -98,7 +98,7 @@ University of Barcelona \\}
   \begin{enumerate}
     \item Compute analytically the optimal demands and the excess demand functions. 
     \item Create a function in Matlab that gives the excess demand for good 1. 
-    \item Using \verb;fzero; find the equilibrium price for $\alpha = 0.25, \beta = 0.75, \rho = 0.25, \omega_{1,A} = 10, \omega_{2,A} = 15, \omega_{1,B} = 15,$ and $\omega_{2,B} = 10$. Verify that the excess demand is, in fact, $0$ or close to $0$.
+    \item Using \href{https://es.mathworks.com/help/matlab/ref/fzero.html}{\texttt{fzero}}, find the equilibrium price for $\alpha = 0.25, \beta = 0.75, \rho = 0.25, \omega_{1,A} = 10, \omega_{2,A} = 15, \omega_{1,B} = 15,$ and $\omega_{2,B} = 10$. Verify that the excess demand is, in fact, $0$ or close to $0$.
     \item Keeping all the parameters the same, how does the solution change if $\rho = 1.5$?
   \end{enumerate}
 \end{exercise}
@@ -112,10 +112,9 @@ Assume the consumer spends all her income in the two goods.
 \begin{enumerate}
     \item State this maximization problem of two variables as a \textbf{minimization problem in one variable}. \underline{Hint:} Define the proportion spent on $c_1$ as $\phi$ and make a change of variables.
     \item Solve this problem by hand and find the analytical solution for $\phi$.
-    \item Solve this problem by finding the solution of the first order conditions using \verb;fzero;.
+    \item Solve this problem by finding the solution of the first order conditions using \href{https://es.mathworks.com/help/matlab/ref/fzero.html}{\texttt{fzero}}.
     \item Solve this problem as an optimization problem using \href{https://es.mathworks.com/help/matlab/ref/fminbnd.html}{\texttt{fminbnd}}.
     \item Solve this problem as an optimization problem using \href{https://es.mathworks.com/help/optim/ug/fminunc.html}{\texttt{fminunc}}. How does the solver perform under different initial guesses?
-    \item Compare the results of both methods with the true solution, the number of iterations needed, and the tolerance set.
 \end{enumerate}
 \end{exercise}
 
