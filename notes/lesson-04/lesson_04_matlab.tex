@@ -1,12 +1,13 @@
 \documentclass[11pt,xcolor={svgnames},aspectratio=169,usepdftitle=false,notheorems]{beamer}
-
 %===========================================================
 % DOCUMENT
 %===========================================================
-\usepackage{rafa_style_beamer}
+\usepackage{clean_style_beamer}  % Loads my formatting 
+
 \addbibresource{../matlab_intro.bib}
+
 \title{Introduction to Matlab}
-\subtitle{Lesson 04 --- Optimization}
+\subtitle{Lesson 04 --- Importing, manipulating, and fitting Data}
 
 \author{Rafael Serrano-Quintero}
 
@@ -19,594 +20,502 @@
 
 \maketitle
 
-\section{Optimization Preliminaries}
+\section{Importing and Manipulating Data}
 
-\begin{frame}
-  \frametitle{Optimization Preliminaries}
+\begin{frame}[fragile]
+    \frametitle{Importing and Manipulating Data}
 \begin{itemize}
-  \item \alert{\textbf{Agents optimize}} is the foundational assumption of economic theory.
-  \begin{itemize}
-    \item Firms minimize costs / maximize profits.
-    \item Consumers maximize utility / minimize expenditures.
-  \end{itemize}
-  \item Not only in theory \ldots Econometricians use
-  \begin{itemize}
-    \item Maximum likelihood, least squares, method of moments \ldots
-    \item All optimization problems.
-  \end{itemize}
-  \item We will learn the basics of how to state and solve this type of problems in Matlab.
+    \item Download the data from the World Bank in CSV.
+    \begin{itemize}
+        \item \href{https://data.worldbank.org/indicator/NY.GDP.PCAP.KD}{GDP per capita (constant 2010 US\$)}
+        \item \href{https://data.worldbank.org/indicator/SP.URB.TOTL.IN.ZS}{Urban population as a \% of total population}
+    \end{itemize}
+    \item Rename to \verb;urban_pop.csv; and \verb;real_gdp_percapita.csv;
+    \item Forget by now about the metadata files.
+    \item Download in a subdirectory in the working directory as \verb;working_directory/data/;
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- Definition of the Problem}
-The most general definition of an optimization problem
-\begin{align}
-  \underset{x\in\mathbb{R}^n}{\min} \phantom{\Omega} &   f(x) \tag{Objective Function} \label{eqn:objective_func} \\
-  \text{s.t. } & g(x) = 0 \tag{Equality Constraints} \label{eqn:equality_constr} \\
-  \phantom{\text{s.t.}} & h(x) \leq 0 \tag{Inequality Constraints} \label{eqn:inequality_constr}
-\end{align}
-where
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
 \begin{itemize}
-  \item the \ref{eqn:objective_func} $f :\mathbb{R}^n\mapsto \mathbb{R}$
-  \item the $m$ \ref{eqn:equality_constr} $g :\mathbb{R}^n\mapsto \mathbb{R}^m$
-  \item the $l$ \ref{eqn:inequality_constr} $h :\mathbb{R}^n\mapsto \mathbb{R}^l$
+  \item Since the data files have \textit{headers} or column names, we explicitly tell the command that.
+  \item Let's import the data as a table using \verb;readtable();
+\end{itemize}
+\begin{lstlisting}
+close all
+clear
+clc
+
+% Importing data from CSV file
+gdp = readtable('./data/real_gdp_percapita.csv','ReadVariableNames',true);
+pop = readtable('./data/urban_pop.csv','ReadVariableNames',true);  
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+\begin{itemize}
+  \item \href{https://www.mathworks.com/help/matlab/tables.html}{Tables in Matlab} are a data type created to store data that is column oriented.
+  \item They are not like arrays, we need to extract the numeric columns.
+  \item Let's find out if country codes are the same for both variables.
+  \item To make manipulation easier, transform to a \href{https://www.mathworks.com/help/matlab/ref/cell.html}{cell array}.
+\end{itemize}
+\begin{lstlisting}
+% Extract CountryCode for both files
+ccode_gdp = table2cell(gdp(:,2));
+ccode_pop = table2cell(pop(:,2));
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+  To check if country codes coincide:
+  \begin{enumerate}
+    \item Compare one by one.
+    \item Check if all elements are \verb;true;
+  \end{enumerate}
+\begin{lstlisting}
+% Compare strings one by one
+compare_ccode = strcmp(ccode_gdp,ccode_pop);
+all_true = all(compare_ccode);
+disp(all_true)
+\end{lstlisting}
+Since they are, we can safely merge the two variables.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+\begin{itemize}
+  \item Extract the numeric values of GDP and urban population.
+  \item We use \verb;table2array(); to convert into a matrix.
+  \item We transpose so that each row is a year and each column a country.
+\end{itemize}
+\begin{lstlisting}
+% Extract GDP per capita and urban population as a matrices
+gdp_pc = table2array(gdp(:,5:end))';
+pop_ub = table2array(pop(:,5:end))';
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+\begin{itemize}
+  \item Explore the rough relationship between $\log(GDP)$ and urban population.
+  \item To do a pooled scatter plot use the \verb;(:); operator. This converts a matrix into a vector.
+\end{itemize}
+\begin{lstlisting}
+% Explore the relationship between GDPpc and Urban population
+figure
+scatter(log(gdp_pc(:)),pop_ub(:),...
+      'filled','MarkerFaceAlpha',0.25)
+hold on
+lsline % add a least squares line
+
+% Rough correlation
+disp(corrcoef(log(gdp_pc(:)),pop_ub(:),'Rows','complete'))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+\begin{itemize}
+  \item The correlation for all countries is $0.8290$. Let's explore the correlation for each country individually.
+\end{itemize}
+\begin{lstlisting}
+% Correlation by country
+[T, N] = size(gdp_pc); % Time periods (T) and number of countries (N)
+
+corr_coefs = zeros(N,1);
+for n = 1:N
+    tmp = corrcoef(log(gdp_pc(:,n)),pop_ub(:,n),'Rows','Complete');
+    corr_coefs(n,1) = tmp(1,2);
+end
+
+mean(corr_coefs,'omitnan')
+\end{lstlisting}
+\begin{itemize}
+  \item The average is $0.54$ and the standard deviation $0.60$.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- Definitions}
-Let $f : \mathcal{D}\subseteq\mathbb{R}^n \mapsto \mathbb{R}$. 
-
-\begin{definition}
-A \alert{\textbf{critical point}} $x^*\in\mathcal{D}$ of $f$ satisfies $\nabla f(x^*) \equiv \left(\dfrac{\partial f}{\partial x_1}(x^*), \ldots,\dfrac{\partial f}{\partial x_n}(x^*)\right) = 0$.
-\end{definition}
-
-\begin{definition}
-A point $x^*\in\mathcal{D}$ is a \alert{\textbf{min}} of $f$ on $\mathcal{D}$ if $f(x^*)\leq f(x) \forall x\in\mathcal{D}$. It is a \alert{\textbf{strict min}} if $f(x^*) < f(x) \forall x\neq x^*\in\mathcal{D}$.
-\end{definition}
-
-\begin{definition}
-A point $x^*\in\mathcal{D}$ is a \alert{\textbf{local (or relative or weak) min}} of $f$ on $\mathcal{D}$ if there is a ball $B_r(x^*)$ such that $f(x^*) \leq f(x) \forall x\in B_r(x^*)\cap\mathcal{D}$. It is a \alert{\textbf{strict local (or relative or weak) min}} if $f(x^*) < f(x) \forall x\neq x^*\in B_r(x^*)\cap\mathcal{D}$
-\end{definition}
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+\begin{exercise}
+Plot the evolution over time for a particular country. Plot the two series in the same graph with two different $y-$axes. Also, make sure you include the years in the $x-$axis.
+\end{exercise}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- Definitions}
+\begin{frame}[fragile]
+  \frametitle{Importing and Manipulating Data}
+How has it been for India?
+
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{lstlisting}
+% Plot the evolution for India
+years = 1960:1960+T-1;
+india = strcmp(ccode_gdp,'IND');
+gdp_india = gdp_pc(:,india);
+urb_india = pop_ub(:,india);
+  
+figure
+plot(years,gdp_india,'-o')
+hold on
+yyaxis right
+plot(years,urb_india,'-s')
+\end{lstlisting}
+\end{column}
+\begin{column}{0.45\textwidth}
 \begin{figure}
   \centering
-    \includegraphics[width = 0.75\textwidth]{../figures/classification_critical_points.png}
-    \caption{Classification of Critical Points. See \cite{kochenderfer2019optimization}}
+  \includegraphics[width = \textwidth]{../figures/india_gdp_urb.png}
+  \caption{Real GDPpc and Urban Pop}
+  \label{fig:india_evolution}
 \end{figure}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- First Order Conditions}
-\begin{itemize}
-  \item All points \alert{\textbf{need}} that $f'(x^*) = 0$. Notice this is a \alert{\textbf{necessary condition}} but not sufficient.
-  \item The inflection point also has $f'(x^*) = 0$ {\tiny (An inflection point is where the sign of the second derivative changes)}.
-\end{itemize}
-
-\begin{theorem}
-Let $f : \mathcal{D}\subseteq\mathbb{R}^n \mapsto \mathbb{R}$ be a $\mathcal{C}^1$ function. If $x^*$ is a local min or max of $f$ in $\mathcal{D}$ and $x^*$ is an interior point of $\mathcal{D}$, then
-\[
-\nabla f(x^*) = 0 \ \text{ for } i = 1,\ldots, n
-\]
-\end{theorem}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- Second Order Conditions}
-\begin{theorem}
-Let $f : \mathcal{D}\subseteq\mathbb{R}^n \mapsto \mathbb{R}$ be a $\mathcal{C}^2$ function. Suppose $x^*$ is a critical point of $f$.
-\begin{enumerate}
-  \item If $H_f(x)$ is positive (negative) definite, then $x^*$ is a strict local min (max) of $f$.
-  \item If $H_f(x)$ is indefinite, then $x^*$ is neither a local min or max of $f$.
-\end{enumerate}
-\end{theorem}
-
-\begin{definition}
-Let $f : \mathcal{D}\subseteq\mathbb{R}^n \mapsto \mathbb{R}$ be a $\mathcal{C}^2$ function. The Hessian matrix $H_f$ is a square $n\times n$ matrix whose $(i,j)-$th entry is defined by $(H_f)_{i,j} = \dfrac{\partial^2 f}{\partial x_i \partial x_j}$.
-\end{definition}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Optimization Preliminaries --- Recap}
-\begin{itemize}
-  \item This has been a very brief recap on basic optimization.
-  \item For a refresher, you can take a look at \cite[Chapters~17-19]{simon1994mathematics}.
-  \item We will cover the very basics of optimization and implementation in Matlab.
-  \item All numerical optimization methods:
-  \begin{itemize}
-    \item Search for \alert{\textbf{feasible choices}}
-    \item Generate a sequence of \alert{\textbf{guesses}}
-    \item Try to make the sequence \alert{\textbf{converge}} to the true solution.
-  \end{itemize}
-  {\tiny Pretty similar to root finding algorithms\ldots right?}
-\end{itemize}
-\end{frame}
-
-\section{Optimization in One Dimension}
-
-\begin{frame}
-  \frametitle{The Simplest Optimization Problem}
-
-The simplest optimization problem is \alert{\textbf{unconstrained optimization}} in one dimension
-\[
-\underset{x\in\mathbb{R}}{\min} \phantom{\Omega} f(x)
-\]
-where $f : \mathbb{R}\mapsto\mathbb{R}$.
-Why focusing on one dimension?
-\begin{enumerate}
-  \item Illustrate techniques in a clear way.
-  \item Many multivariate methods boil down to solving a sequence of one-dimensional problems.
-\end{enumerate}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Optimization Methods --- Categories}
-Four general categories for optimization methods:
-\begin{enumerate}
-  \item Use derivatives.
-  \item Do not use derivatives.
-  \item Mixed methods.
-  \item Simulation-based methods.
-\end{enumerate}
-
-We will look at methods in the first two.
-\end{frame}
-
-\subsection{Bracketing Method}
-
-\begin{frame}
-  \frametitle{Bracketing Method --- The Intuition}
-  \begin{columns}
-  \begin{column}{0.49\textwidth}
-    \begin{itemize}
-      \item Suppose $f : \mathbb{R}\mapsto\mathbb{R}$ is \href{https://en.wikipedia.org/wiki/Unimodality\#Unimodal_function}{unimodal}.
-      \item Let $a<b<c\in\mathbb{R}$ be three points such that
-      \begin{equation}
-        f(a), f(c) > f(b) \label{eqn:bracketing_criterion}
-      \end{equation}
-      \item Then, we know a minimum exists in $[a,c]$.
-      \item How to find the optimum?
-    \end{itemize}
-  \end{column}
-  \begin{column}{0.5\textwidth}
-    \begin{figure}
-      \includegraphics[width=0.95\textwidth]{../figures/optimization_bracketing.png}
-      \caption{See \cite{kochenderfer2019optimization}}
-    \end{figure}
-  \end{column}
+\end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Bracketing Method --- The Algorithm}
-\begin{enumerate}
-  \item Define $h$ as the step size, a constant $\alpha > 1$, and a given initial $x_0$ and compute
-  \[
-  f(x_0), f(x_0 \pm \alpha h), f(x_0 \pm \alpha^2 h), \ldots
-  \]
-  until we find a triplet satisfying \eqref{eqn:bracketing_criterion}. Choose a stopping criterion $\varepsilon$.
-  \item If $b - a < c - b$, set $d = (b+c)/2$, otherwise, $d = (a+b) / 2$. Compute $f(d)$.
-  \item If $d < b$ and $f(d) > f(b)$, replace $(a,b,c)$ with $(d,b,c)$. If $d<b$ and $f(d) < f(b)$, replace $(a,b,c)$ with $(a,d,b)$. If $d > b$ and $f(d) < f(b)$, replace $(a,b,c)$ with $(b,d,c)$.  Otherwise, replace $(a,b,c)$ with $(a,b,d)$.
-  \item If $c - a < \varepsilon$, stop. Otherwise, go to step 2.
-\end{enumerate}
-\end{frame}
+\section{Fitting Data}
 
-\begin{frame}
-  \frametitle{Bracketing Method --- Remarks}
+\subsection{Linear Regression}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression}
 \begin{itemize}
-  \item Slow. Similar to bisection.
-  \item The stopping criterion is clear. If the length of the interval $[a,c]$ is sufficiently small, for practical terms, we have found the optimum.
-  \item The method finds a \alert{\textbf{local minimum}}, depending on the starting triplet $(a,b,c)$ the method will converge to one minimum or another. {\tiny This is a fairly common problem in many methods.}
-  \item If we know there is only one solution, the method always converges.
-  \item Note we need three points in each iteration, depending on how costly it is to compute $f$ this might be a problem.
+  \item Let's estimate a linear regression for the relationship between GDP per capita and urban population with a time trend.
+  \[
+  \log(GDPpc_{t,i}) = \beta_0 + \beta_1 urban_{t,i} + \beta_2 time_t + \varepsilon_{t,i}
+  \]
+  \item The OLS estimator is $\hat{\beta} = (X'X)^{-1}X'y$ where
+  \[
+  X = \begin{pmatrix}
+    1 & urban_{1960,1} & 1960 \\
+    \vdots & \vdots & \vdots \\
+    1 & urban_{2020,N} & 2020 
+  \end{pmatrix}  \ 
+  y = \begin{pmatrix}
+    \log(GDPpc_{1960,1}) \\
+    \vdots \\
+    \log(GDPpc_{2020,N})
+  \end{pmatrix}
+  \]
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Bracketing Method --- An Example}
-Let's minimize
+\begin{frame}[fragile]
+  \frametitle{Linear Regression}
+Necessary steps:
+\begin{enumerate}
+  \item Reshape matrices into vectors of size $T\times N$ and create $time_t$.
+\end{enumerate}
+\begin{lstlisting}
+% Reshape GDPpc matrix into a vector
+y = reshape(gdp_pc,[T*N,1]);
+y = log(y);     % Recall our dependent variable is in logs!
+
+% Reshape pop_ub in the same way
+urb_vect = reshape(pop_ub,[T*N,1]);
+
+% Create the time trend
+years_mat = repmat(years,N,1);
+years_mat = years_mat';
+years_vec = reshape(years_mat,[T*N,1]);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression}
+Necessary steps:
+\begin{enumerate}
+  \setcounter{enumi}{1}
+  \item Remove missing values from all variables.
+\end{enumerate}
+\begin{lstlisting}
+% Remove missing values from both variables
+miss_y = isnan(y);
+miss_u = isnan(urb_vect);
+tot_miss = logical(miss_y + miss_u);
+
+y_clean = y(~tot_miss);
+u_clean = urb_vect(~tot_miss);
+years_vec = years_vec(~tot_miss);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression}
+Necessary steps:
+\begin{enumerate}
+  \setcounter{enumi}{2}
+  \item Construct $X$ and compute $\hat{\beta} = (X'X)^{-1}X'y$
+\end{enumerate}
+\begin{lstlisting}
+% Create matrix X
+X = [ones(size(u_clean)), u_clean, years_vec];
+
+% Estimate bhat
+bhat = ((X')*X)\((X')*y_clean);
+\end{lstlisting}
 \[
-f(x) = \frac{x^2}{2} - x
+\hat{\beta} = \begin{pmatrix}
+11.0201 \\
+\phantom{-}0.0509  \\
+-0.0027 \\
+\end{pmatrix}
 \]
+So, $\Delta urban = 1$ percentage point is associated with $\Delta GDPpc =  5.09\%$. \alert{\textbf{NOT A CAUSAL RELATIONSHIP!!!}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression --- Other Ways}
 \begin{itemize}
-  \item The function has a global minimum in $x = 1$.
-  \item Let us divide the code into two blocks:
-  \begin{enumerate}
-    \item Initial bracketing.
-    \item Refining given the bracketing.
-  \end{enumerate}
+  \item What if we want standard errors, p-values \ldots ?
+  \item Fortunately, not by hand! (\href{https://www.mathworks.com/help/stats/fitlm.html?s_tid=doc_ta}{\texttt{fitlm}} and \href{https://www.mathworks.com/help/stats/linearmodel.html}{\texttt{LinearModel}})
+  \item These are found within the \href{https://www.mathworks.com/help/stats/index.html?s_tid=CRUX_lftnav}{Statistics and Machine Learning Toolbox}.
+  \item Alternatives:
+  \begin{itemize}
+    \item \href{https://www.mathworks.com/help/curvefit/fit.html?s_tid=doc_ta}{\texttt{fit}} from the \href{https://www.mathworks.com/help/curvefit/index.html?s_tid=CRUX_lftnav}{Curve Fitting Toolbox}
+    \item \href{https://www.mathworks.com/help/stats/regress.html}{\texttt{regress}} from the \href{https://www.mathworks.com/help/stats/index.html?s_tid=CRUX_lftnav}{Statistics and Machine Learning Toolbox}
+    \item \href{https://www.spatial-econometrics.com/}{Spatial Econometrics Toolbox} by James P. LeSage. Much more recommended for serious data work are \href{https://www.r-project.org/}{R}, \href{https://www.stata.com/}{Stata}, \href{https://www.python.org/}{Python}
+  \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression --- \texttt{fitlm} and \texttt{LinearModel}}
+\begin{itemize}
+  \item \texttt{fitlm} creates a \texttt{LinearModel} object, estimates the model, and produces results for that particular model object.
+  \item \texttt{fitlm} accepts data in \verb;table; format or numeric array format. We will stick to numeric array.
+  \item By default it includes a constant and deals with missing values.
+\end{itemize}
+\begin{lstlisting}
+% Control variables
+Xfitlm = [urb_vect, years_vec];
+
+% Model object
+linmodel = fitlm(Xfitlm,y);
+disp(linmodel)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression --- \texttt{fitlm} and \texttt{LinearModel}}
+  The default output of the \verb;fitlm; model includes
+\begin{itemize}
+  \item Coefficients, standard errors, $t-$statistics, $p-$values \ldots
+  \item Reassuringly, we get the same coefficients as before.
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+>> disp(linmodel)
+
+Linear regression model:
+    y ~ 1 + x1 + x2
+
+Estimated Coefficients:
+                    Estimate         SE         tStat       pValue  
+                   __________    __________    _______    __________
+
+    (Intercept)         11.02       0.92273     11.943    1.0777e-32
+    x1               0.050911    0.00032252     157.86             0
+    x2             -0.0026586     0.0004651    -5.7161    1.1155e-08
+
+
+Number of observations: 12131, Error degrees of freedom: 12128
+Root Mean Squared Error: 0.821
+R-squared: 0.688,  Adjusted R-Squared: 0.688
+F-statistic vs. constant model: 1.34e+04, p-value = 0
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Linear Regression --- \texttt{fitlm} and \texttt{LinearModel}}
+We can perform some model diagnostics
+\begin{itemize}
+  \item \verb;plotResiduals(linmodel); to show a histogram of residuals.
+  \item \verb;plotResiduals(linmodel,'fitted'); residuals vs fitted values.
+  \item \verb;plotEffects(linmodel); to show size of coefficients.
+\end{itemize}
+We can access directly several derived objects
+\begin{itemize}
+  \item \verb;linmodel.LogLikelihood; the log-likelihood.
+  \item \verb;linmodel.Residuals; the residuals of the fitted model.
+  \item \verb;linmodel.Coefficients; the value of estimated coefficients.
+\end{itemize}
+\end{frame}
+
+\subsection{Polynomial Fit and Polynomial Evaluation}
+
+\begin{frame}
+  \frametitle{Polynomial Fit}
+\begin{theorem}[Weierstrass' Approximation Theorem]
+Let $f(x)$ be a continuous real-valued function defined on $[a,b]$. Then, given $\varepsilon$ we can find a polynomial $p(x)$ such that
+\[
+\sup \lvert f(x) - p(x) \rvert < \varepsilon  
+\]
+\end{theorem}
+\textit{Informally:} any continuous function on $[a,b]$ can be approximated well by a polynomial function of a sufficient degree.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Bracketing Method --- Initial Bracketing}
-\begin{enumerate}
-  \item Start from guess $x_0$ and compute $x_1 = x_0 + \alpha h$.
-  \item Evaluate $f(x_0)$ and $f(x_1)$. If $f(x_1) < f(x_0)$ keep increasing until $f(x_2) > f(x_1)$
-  \item Otherwise, change direction and increase interval until $f(x_2) > f(x_0)$.
-  \item Increase $\alpha$ in each step to make the interval larger.
-\end{enumerate}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bracketing Method --- Initial Bracketing}
+  \frametitle{Polynomial Fit}
 \begin{itemize}
-  \item Start from guess $x_0 = -5$ {\tiny (why not?)} and compute increment.
-  \begin{lstlisting}
-  % Parameters of bracketing method
-  h = 1e-2;
-  alp = 1.1;
-    
-  % Step 1 - Initial bracketing
-  x0 = -5;
-  fx0 = fun(x0);
-  x1 = x0 + alp*h;
-  fx1 = fun(x1);
-  % If function is increasing in this direction, change direction  
-  if fx1 > fx0
-      h = -h;
-  end
-  \end{lstlisting}
+  \item Suppose, we have the following relationship between $y$ and $x$
+  \[
+  y = \sin(5x^2 + \pi)
+  \]
+  with $x\in\mathbb{R}$. Note that the function is continuous in $\mathbb{R}$.
+  \item But we do not know the relationship (or it is very expensive to compute). Let us approximate by an $n-$degree polynomial.
+  \item This is done with the commands \href{https://www.mathworks.com/help/matlab/ref/polyfit.html}{\texttt{polyfit}} and \href{https://www.mathworks.com/help/matlab/ref/polyval.html}{\texttt{polyval}} to fit and evaluate polynomials respectively. \footnotesize (How exactly are we fitting\ldots ?)
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Bracketing Method --- Initial Bracketing}
-\begin{itemize}
-  \item Stablish the outer loop.
-  \begin{lstlisting}
-  condition = true;
-  it = 1;
-  while condition
-  % Outer loop
-  end
-  \end{lstlisting}
-  \item Suppose $h < 0$
-  \begin{lstlisting}
-  x2 = x0 + alp*h; 
-  fx2 = fun(x2);
-  % We found the function increases!
-  if fx2 > fx0
-    a = x2;
-    b = x0;
-    c = x1;
-    condition = false;
-  end
-  \end{lstlisting}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bracketing Method --- Initial Bracketing}
-\begin{itemize}
-  \item Suppose $h > 0$
-  \begin{lstlisting}
-  x2 = x1 + alp*h;
-  fx2 = fun(x2);
-  % We found the function increases!
-  if fx2 > fx1
-    a = x0;
-    b = x1;
-    c = x2;
-    condition = false;
-  end
-  \end{lstlisting}
-  \item If we have not found the function increases, update $\alpha$
-  \begin{lstlisting}
-  alp = alp*2;
-  \end{lstlisting}
-  \item Then, simply put all together in nested \verb;if-else; statements.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bracketing Method --- Refining Bracketing}
-\begin{itemize}
-  \item Initiallize loop
-  \begin{lstlisting}
-  while (difference > tol) && (it < maxit)
-      % Stuff goes here
-  end
-  \end{lstlisting}
-  \item Define $d$ and compute $f(d)$
-  \begin{lstlisting}
-  % Step 2: define d and compute f(d)
-  if (b - a) > (c - b)
-      d = (a + b)/2;
-  else
-      d = (b + c)/2;
-  end
-  fd = fun(d);
-  \end{lstlisting}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Bracketing Method --- Refining Bracketing}
-\begin{minipage}{0.48\textwidth}
+  \frametitle{Polynomial Fit}
   \begin{itemize}
-    \item Refine the interval if $d < b$
-    \begin{lstlisting}
-% Step 3: refine the interval
-if d < b
-    if fd > fb
-        a1 = d;
-        b1 = b;
-        c1 = c;
-    else
-        a1 = a;
-        b1 = d;
-        c1 = b;
-    end
-else
-    \end{lstlisting}
+    \item Let's fit the data using \nth{5}, \nth{6}, and \nth{7} degree polynomials.
+    \item Evaluate them and plot them.
   \end{itemize}
+
+\begin{minipage}{0.45\textwidth}
+\begin{lstlisting}
+% Simulate variables and their relationship
+x = linspace(-1,1,1000);
+y = sin(5.*x.^2 + pi);
+  
+% Fit 5,6,7th degree polynomials
+p5 = polyfit(x,y,5);
+p6 = polyfit(x,y,6);
+p7 = polyfit(x,y,7);
+\end{lstlisting}
 \end{minipage}
-\begin{minipage}{0.48\textwidth}
-  \begin{itemize}
-    \item Refine the interval if $d > b$
-    \begin{lstlisting}
-% Step 3: refine the interval
-else
-  if fb < fd
-      a1 = a;
-      b1 = b;
-      c1 = d;
-  else
-      a1 = b;
-      b1 = d;
-      c1 = c;
-  end
-end
-    \end{lstlisting}
-  \end{itemize}
+\begin{minipage}{0.45\textwidth}
+\begin{figure}
+  \centering
+    \includegraphics[width = \textwidth]{../figures/poly_fit.png}
+\end{figure}
 \end{minipage}
-Rename \verb;a1; by \verb;a;, compute $(c - a)$, and update iteration counter.
 \end{frame}
 
-\subsection{Newton-Raphson Method}
-
 \begin{frame}
-  \frametitle{Newton-Raphson Method}
+    \frametitle{Polynomial Fit}
+\begin{exercise}
+  Generate a vector $x$ in the interval $[-4,4]$ with $1000$ points (\href{https://www.mathworks.com/help/matlab/ref/linspace.html}{\normalfont \texttt{linspace}}). Now, create the variable $y = x^2 + \varepsilon$ where $\varepsilon$ is white noise (\href{https://www.mathworks.com/help/matlab/ref/randn.html}{\normalfont\texttt{randn}}) with standard  deviation $1.5$. Fit a second degree polynomial and plot the simulated data and the fitted polynomial on the same plot.
+\end{exercise}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Polynomial Fit}
+Fitting data with noise.
+\begin{lstlisting}
+X = linspace(-4,4,1000);
+Y = X.^2 + 1.5.*randn(1,length(X));
+p2 = polyfit(X,Y,2);
+
+figure
+scatter(X,Y)
+hold on
+plot(X,polyval(p2,X),'-','LineWidth',1.35)
+title('Polynomial Fit')
+\end{lstlisting}
+\end{frame}
+
+\subsection{Nonlinear Least Squares}
+
+\begin{frame}[fragile]
+  \frametitle{Nonlinear Least Squares}
 \begin{itemize}
-  \item Familiar? Yes! It is very closely related to the root finding algorithm!
-  \item Given an initial $x_0$, compute a second order Taylor expansion around $x_0$:
+  \item Consider a set of data points $(x_1,y_1),\ldots,(x_N,y_N)$ and a function $y = f(x,\beta)$ depending on unknown parameters $\beta = (\beta_1,\ldots,\beta_m)$ where $N > m$.
+  \item The Nonlinear Least Squares estimator is the set of coefficients $\beta$ such that
   \[
-  f(x) \approx f(x_0) + f'(x_0)(x - x_0) + \frac{f''(x_0)}{2}(x - x_0)^2
+  \underset{\beta}{\min} \sum^N_{i=1} (y_i - f(x_i,\beta))^2
   \]
-  \item Minimizing this approximation, the FOC we get is
-  \[
-  f'(x_0) + f''(x_0)(x^* - x_0) = 0
-  \]
-  solving for $x^*$
-  \[
-  x^* = x_0 - \frac{f'(x_0)}{f''(x_0)}
-  \]
-  \item Which is the \alert{\textbf{same iteration scheme}} that we saw previously!
+  \item \verb;polyfit; is exactly doing that but when $f(x,\beta)$ is a polynomial of degree $n$.
+  \item We can extend that to \alert{\textbf{any}} nonlinear function easily.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Newton-Raphson Method --- Remarks}
+\begin{frame}[fragile]
+  \frametitle{Nonlinear Least Squares --- Functions}
 \begin{itemize}
-  \item Newton-Raphson's method tries to finds \alert{\textbf{critical points}}.
-  \item We \alert{\textbf{must check}} $f''(x^*)$ to check what we have found.
-  \item Problems:
+  \item To perform NLLS Matlab provides several alternatives
+  \item We will focus on \href{https://www.mathworks.com/help/optim/ug/lsqcurvefit.html}{\texttt{lsqcurvefit}}. Other alternatives are
   \begin{itemize}
-    \item Convergence is not ensured.
-    \item $f''(x)$ might be difficult to compute. If we rely on finite difference methods, we will be adding errors.
-    \item Very sensitive to initial conditions.
+    \item \href{https://www.mathworks.com/help/optim/ug/lsqnonlin.html}{\texttt{lsqnonlin}}
+    \item \href{https://www.mathworks.com/help/stats/nlinfit.html}{\texttt{nlinfit}}
+    \item \href{https://www.mathworks.com/help/stats/fitnlm.html}{\texttt{fitnlm}} (very similar to \texttt{fitlm})
   \end{itemize}
-  \item \href{https://www.sas.upenn.edu/~jesusfv/Lecture_NM_2_Optimization.pdf}{From Fern\'andez-Villaverde's slides}:
-  \textit{If you do not know where you're going, at least go slowly.}
+  \item \texttt{lsqcurvefit} and \texttt{lsqnonlin} are \alert{\textbf{equivalent}} since they use the same algorithm.
+  \item We will focus on \href{https://www.mathworks.com/help/optim/ug/lsqcurvefit.html}{\texttt{lsqcurvefit}} provides a convenient way of writing the problem and advances syntax for the lecture on optimization.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Newton-Raphson Method --- The Algorithm}
-\begin{enumerate}
-  \item Choose initial guess $x_0$ and stopping parameters $\delta,\varepsilon > 0$.
-  \item Use the iteration scheme
-  \[
-  x_{k+1} = x_k - \frac{f'(x_k)}{f''(x_k)}
-  \]
-  \item If
+\begin{frame}[fragile]
+  \frametitle{Nonlinear Least Squares --- \texttt{lsqcurvefit}}
+  \begin{itemize}
+    \item Suppose we want to fit a data generating process of the type
     \[
-    \frac{\lvert x_k - x_{k+1}\rvert}{1 + \lvert x_k \rvert} < \varepsilon \ \text{ and } \ \lvert f'(x_k)\rvert < \delta
+    y = b_1 \exp(b_2 x) + \varepsilon \ \text{ where } \varepsilon \thicksim \mathcal{N}(0,0.15) \text{ and } x\in [0,5]
     \]
-  stop. Otherwise, go to step 1.
-\end{enumerate}
+    \item Suppose we have $N$ pairs of observations $(x_i,y_i)$ and we want to find parameters $b_1$ and $b_2$ that best fit the data.
+    \item Let's simulate the data first
+  \end{itemize}
+\begin{lstlisting}
+%Simulate data
+N = 500;
+b1 = 2;
+b2 = -1.5;
+x = linspace(0,5,N);
+y = b1*exp(b2*x)+0.15*randn(1,N);
+\end{lstlisting}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Newton-Raphson Method --- An Example}
-
+\begin{frame}[fragile]
+  \frametitle{Nonlinear Least Squares --- \texttt{lsqcurvefit}}
 \begin{itemize}
-  \item Apply the Newton-Raphson method to solve 
-
+  \item Once the data is simulated, we create an anonymous function of the form
   \[
-  \underset{x\in\mathbb{R}^n}{\min} \phantom{\Omega} f(x) = \frac{x^2}{2} - \log(x^2)
+  y = b_1\exp(b_2 x)  
   \]
-  \item The true solution is $x^* = \pm \sqrt{2} \approx \pm 1.4142\ldots$
-  \item Your choice of starting point $x_0$ will determine to which minimum you converge.
+  that takes as arguments both the coefficients $b_1$ and $b_2$ and the data, $x$.
 \end{itemize}
-\end{frame}
-
-\section{Optimization in Matlab}
-
-\subsection{Unconstrained Optimization}
-
-\begin{frame}
-  \frametitle{Unconstrained Optimization in Matlab}
-\begin{itemize}
-  \item We have covered two basic methods of unconstrained optimization.
-  \item We are going to see now how to solve \alert{\textbf{(un)constrained optimization}} problems using Matlab's routines.
-  \item We start with the unconstrained optimization routine \href{https://www.mathworks.com/help/optim/ug/fminunc.html}{\texttt{fminunc}}.
-  \item This solves unconstrained multivariate optimization problems.
-  \item It can use two types of algorithms. Both based on Newton-Raphson methods.
-  \begin{itemize}
-    \item \href{https://en.wikipedia.org/wiki/Broyden-Fletcher-Goldfarb-Shanno_algorithm}{BFGS} which is a quasi-Newton method.
-    \item \href{https://www.mathworks.com/help/optim/ug/unconstrained-nonlinear-optimization-algorithms.html\#brnpcy5}{Trust-region methods}. Approximates the objective function in a subset, if this approximates well the function, it extends the region, otherwise, it contracts the region.
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Unconstrained Optimization --- \texttt{fminunc}}
-The basic syntax of \verb;fminunc; takes as inputs a function \verb;fun; and an initial point \verb;x0; 
 \begin{lstlisting}
-[x, fval] = fminunc(fun,x0)
+% Declare anonymous function with our model
+func_fit = @(b,xdata)(b(1)*exp(b(2)*xdata));
 \end{lstlisting}
-The basic output is $x^*$ and $f(x^*)$
-
 \begin{itemize}
-  \item This computes the derivatives numerically
-  \item You can also supply the gradient and the Hessian.
-  \item To supply gradient and Hessian, you need to write it in the function script.
+  \item Now we can fit the function. However, we \alert{\textbf{need to provide initial values!}}
 \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Unconstrained Optimization --- \texttt{fminunc}}
-Let's move to multivariate optimization and minimize the \href{https://en.wikipedia.org/wiki/Rosenbrock_function}{Rosenbrock function}
-
-\[
-f(x_1,x_2) = 100 \left(x_2 - x^2_1\right)^2 + \left(1 - x_1\right)^2
-\]
-
-The gradient is
-
-\[
-\nabla f(x) = \begin{pmatrix}
-  -400(x_2 - x_1^2)x_1 - 2(1 - x_1) \\
-  200(x_2 - x^2_1)
-\end{pmatrix}  
-\]
-
-We will write $f(x_1, x_2)$ as a function script that will give as outputs the value of $f$ and the value of the gradient. {\tiny Check out \href{https://www.mathworks.com/help/matlab/ref/nargout.html}{\texttt{nargout}} and \href{https://www.mathworks.com/help/matlab/ref/nargin.html}{\texttt{nargin}}}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Unconstrained Optimization --- \texttt{fminunc}}
-  \begin{itemize}
-    \item The function script
-  \end{itemize}
 \begin{lstlisting}
-function [f, fgrad] = rosenbrock(x)
-  % Not necessary, but for clarity we unpack the two inputs
-  x1 = x(1);
-  x2 = x(2);
-
-  % Compute f
-  f = 100.*(x2 - x1.^2).^2 + (1 - x_1).^2;
-
-  % Compute gradient (if necessary)
-  if nargout > 1
-      % Notice this is a vector, and the order MATTERS!
-      fgrad = [-400*(x2 - x1.^2).*x1 - 2*(1 - x1);
-      200*(x2 - x1.^2)];
-  end
-end
+% Fit
+b00 = [1, -1]; % Initial condition
+[bhat,resnorm,res,exitflag,output] = lsqcurvefit(func_fit,b00,x,y);
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Unconstrained Optimization --- \texttt{fminunc}}
-  \begin{itemize}
-    \item The optimization call
-    \begin{lstlisting}
-% Initial point
-x0 = [14, 4];
-% Optimization call
-[x, fval] = fminunc(@(x)rosenbrock(x),x0);
-    \end{lstlisting}
-    \item This \alert{\textbf{does not}} tell \verb;fminunc; that we must use the gradient.
-    \item We need to use an options parser. Check out \href{https://www.mathworks.com/help/optim/ug/optim.problemdef.optimizationproblem.optimoptions.html}{\texttt{optimoptions}}.
-    \begin{lstlisting}
-% Add options
-opts = optimoptions('fminunc','Algorithm','trust-region',...
-                        'SpecifyObjectiveGradient', true);
-[xg, fvalg] = fminunc(@(x)rosenbrock(x),x0,opts);
-    \end{lstlisting}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Unconstrained Optimization --- \texttt{fminunc}}
-  \begin{itemize}
-    \item The optimization without gradient yields $f(x_1,x_2) = 1.4045$
-    \item The optimization \alert{\textbf{with}} gradient yields $f(x_1,x_2) = 1.459\times 10^{-11}$. Quite a change!
-    \item Note however the initial guess is pretty bad $x = (14, 4)$ when it should be close to $(1,1)$.
-    \item Improving the guess reduces the differences. Numerical derivatives work well in this case.
-    \item A derivative free solver for unconstrained optimization is \href{https://www.mathworks.com/help/matlab/ref/fminsearch.html}{\texttt{fminsearch}}.
-  \end{itemize}
-\end{frame}
-
-\subsection{Constrained Optimization}
-
 \begin{frame}
-  \frametitle{Constrained Optimization}
-\begin{itemize}
-  \item Matlab offers several options.
-  \item \href{https://www.mathworks.com/help/matlab/ref/fminbnd.html?s_tid=doc_ta}{\texttt{fminbnd}} --- Finds a minimum of a \alert{\textbf{single-variable}} function $f(x)$ in a given interval. The constraints are of the type $a\leq x \leq b$.
-  \item \href{https://www.mathworks.com/help/optim/ug/fmincon.html}{\texttt{fmincon}} --- It is a multivariate constrained optimization command. It accepts constraints of the type $g(x)\leq 0$ and $h(x) = 0$. 
-  \item There are others that you can \href{https://www.mathworks.com/help/optim/ug/problems-handled-by-optimization-toolbox-functions.html\#tblminprobs}{check out here}
-\end{itemize}
+\frametitle{Nonlinear Least Squares --- \texttt{lsqcurvefit}}
+\begin{minipage}{0.45\textwidth}
+    \begin{table}[htbp]
+    \caption{NLLS Fit with \texttt{lsqcurvefit}}
+    \begin{tabular}{@{}lcc@{}}
+    \toprule
+    & Estimate & Std Error \\
+    \midrule
+    $b_1$                   & $\phantom{-}1.9982$   & $0.0362$  \\
+    $b_2$                   & $-1.5579$  & $0.0402$   \\
+    \bottomrule
+    \end{tabular}
+    \end{table}
+\end{minipage}
+\begin{minipage}[r]{0.45\textwidth}
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{../figures/lsqcurvefit_performance.png}
+  \caption{Performance of \texttt{lsqcurvefit}}
+  \label{fig:lsqcurvefit_performance}
+\end{figure}
+\end{minipage}
 \end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Constrained Optimization --- \texttt{fmincon}}
-\begin{itemize}
-  \item Let's focus on \verb;fmincon; which is quite general for the type of problems you will most likely encounter.
-  \item The general declaration of the function is
-\begin{lstlisting}
-x = fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon,options)
-\end{lstlisting}
-  \item We know \verb;options;, \verb;fun;, and \verb;x0; from before.
-  \item \verb;A; and \verb;b; are a matrix and a vector respectively denoting linear constraints such as $Ax\leq b$.
-  \item Similarly, \verb;Aeq; and \verb;beq; denote $Ax = b$.
-  \item \verb;lb; and \verb;ub; are lower and upper bounds respectively for each variable.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Constrained Optimization --- \texttt{fmincon}}
-\begin{itemize}
-  \item The general declaration of the function is
-\begin{lstlisting}
-x = fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon,options)
-\end{lstlisting}
-  \item \verb;nonlcon; are the nonlinear constraints that are supplied in function scripts. These should take the form $h(x) = 0$.
-  \item Optimizing the Rosenbrock function in a unit circle would take as \verb;nonlcon;
-  \begin{lstlisting}
-  ucircle = @(x) c = (x(1)-1)^2 + (x(2)-1)^2 - 1;
-  [x, fval] = fmincon(@(x)rosenbrock(x),x0,[],[],[],[],[],[],@ucircle);
-  \end{lstlisting}
-  \item The empty brackets \verb;[]; denote empty arguments.
-\end{itemize}
-\end{frame}
-
-\subsection{Optimization --- General Tips}
-
-\begin{frame}
-  \frametitle{Optimization --- General Tips}
-\begin{itemize}
-  \item Try to use inequality constraints, $g(x) \leq 0$ is easier to solve than $g(x) = 0$. Recall tolerances.
-  \item A good initial guess is extremely important when optimizing nonlinear functions.
-  \item Good approaches to solving complex problems:
-  \begin{itemize}
-    \item Solve an easier version of the problem to get a good guess.
-    \item Change of variables.
-    \item Combine local and global solution methods.
-  \end{itemize}
-  \item Try to normalize variables as much as you can, unit free problems are typically easier.
-  \item Take advantage of the problem you are tackling by simplifying the computations as much as you can.
-\end{itemize}
-\end{frame}
-
 \end{document}
