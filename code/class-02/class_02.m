@@ -2,215 +2,268 @@
 Rafael Serrano Quintero
 September 2021
 
-This code shows deals with importing and manipulating data first, and with data fitting later. We cover linear and nonlinear regression.
+This code introduces the basics of root finding, numerical differentiation and integration.
 
 Outline
 ---------------------------------------------------------------------------
-1) Import Data and Manipulation
-2) Polynomial fit and Polynomial Evaluation
-3) Non-Linear Least Squares
-    3.1) Anonymous functions
+1) Bisection method
+2) Newton-Raphson method
+3) Finite differences
 %}
 
 close all
 clear
 clc
 
-%===============================================================
-% 1) Import Data and Manipulation
-%===============================================================
-% Importing data from CSV file
-gdp = readtable('./data/real_gdp_percapita.csv','ReadVariableNames',true);
-pop = readtable('./data/urban_pop.csv','ReadVariableNames',true);
+figs_folder = '../../notes/figures/';
 
-% Extract CountryCode for both files
-ccode_gdp = table2cell(gdp(:,2));
-ccode_pop = table2cell(pop(:,2));
+%=================================================================
+% BISECTION METHOD
+%=================================================================
+% Define f as an anonymous function
+myf = @(x) x.^3 - 6.*x.^2 + 11.*x - 6;
 
-% Compare strings one by one
-compare_ccode = strcmp(ccode_gdp,ccode_pop);
-all_true = all(compare_ccode);
-disp(all_true)
+% Plot the function on the interval [0,4] to see the behavior
+xl = 0;
+xr = 4;
+xp = linspace(xl,xr,1000);
 
-% Extract GDP per capita and urban population as a matrices
-gdp_pc = table2array(gdp(:,5:end))';
-pop_ub = table2array(pop(:,5:end))';
-
-% Explore the relationship between GDPpc and Urban population
 figure
-scatter(log(gdp_pc(:)),pop_ub(:),'filled','MarkerFaceAlpha',0.25)
-lsline
+plot(xp, myf(xp))
+hold on
+plot(xp, zeros(size(xp)))
 
-% Pooled correlation
-disp(corrcoef(log(gdp_pc(:)),pop_ub(:),'Rows','complete'))
+% Focusing on [2.5, 4]
+xl = 2.5;
+xr = 4;
 
-% Correlation by country
-[T, N] = size(gdp_pc); % Time periods (T) and number of countries (N)
+% Compute f(xl)f(xr)
+disp(myf(xl).*myf(xr))
 
-corr_coefs = zeros(N,1);
-for n = 1:N
-    tmp = corrcoef(log(gdp_pc(:,n)),pop_ub(:,n),'Rows','Complete');
-    corr_coefs(n,1) = tmp(1,2);
+% === Bisection === %
+it = 1;         % Iteration counter
+delta = 1e-4;   % Tolerance for criterion 1
+epsil = 1e-8;   % Tolerance for criterion 2
+
+% Maximum number of iterations, note
+Nmin = (log(xr - xl) - log(delta)) / log(2);
+maxit = round(Nmin) + 50; % Minimum number plus some more
+
+% Error parameters
+error_f = 10;     % Initialize error for function (any number > delta)
+error_i = (xr - xl) / (1 + abs(xl) + abs(xr));
+
+disp('--------------------------')
+disp('BISECTION METHOD')
+disp('--------------------------')
+while (error_f > delta) && (error_i > epsil) && (it < maxit)
+    % Compute xm
+    xm = xl + (xr - xl) / 2; % Avoids overflow that can happen sometimes
+
+    % Compute value of f at xm
+    fxm = myf(xm);
+
+    % Compute bounds values of f
+    fxl = myf(xl);
+    fxr = myf(xr);
+
+    % Compute errors
+    error_f = abs(fxm);
+    error_i = (xr - xl)./(1 + abs(xl) + abs(xr));
+
+    disp(['Value of xM is ', num2str(xm)])
+    disp(['Error of interval is ',num2str(error_i)])
+    disp(['Error of function is ',num2str(error_f)])
+    disp(['Iteration number ',num2str(it)])
+    disp('--------------------------')
+
+    % Update iteration counter
+    it = it + 1;
+
+    % Update if necessary
+    if fxm*fxl < 0
+        xr = xm;
+    else
+        xl = xm;
+    end
 end
 
-% Average correlation
-mean(corr_coefs,'omitnan')
-std(corr_coefs,'omitnan')
+disp(['BISECTION Solution is x* = ',num2str(xm)])
 
-% Plot the evolution for India
-years = 1960:1960+T-1;
-india = strcmp(ccode_gdp,'IND');
-gdp_india = gdp_pc(:,india);
-urb_india = pop_ub(:,india);
-
-figure
-plot(years,gdp_india,'-o')
-hold on
-yyaxis right
-plot(years,urb_india,'-s')
-saveas(gcf,'../../notes/figures/india_gdp_urb.png')
-
-% Relation for average (over time) GDPpc and Pop
-figure
-scatter(mean(log(gdp_pc),'omitnan'),mean(pop_ub,'omitnan'),...
-            'filled','MarkerFaceAlpha',0.35)
-
-%===============================================================
-% 2) Fitting Data 
-%===============================================================
-% Reshape GDPpc matrix into a vector
-y = reshape(gdp_pc,[T*N,1]);
-y = log(y);     % Recall our dependent variable is in logs!
-
-% Reshape pop_ub in the same way
-urb_vect = reshape(pop_ub,[T*N,1]);
-
-% Create the time trend
-years_mat = repmat(years,N,1);
-years_mat = years_mat';
-years_vec = reshape(years_mat,[T*N,1]);
-
-% Alternatively, with a bit of matrix algebra
-% ymat = (ones(N,1)*years)';
-% ymat = ymat(:);
-
-% Remove missing values from both variables
-miss_y = isnan(y);
-miss_u = isnan(urb_vect);
-tot_miss = logical(miss_y + miss_u);
-
-y_clean = y(~tot_miss);
-u_clean = urb_vect(~tot_miss);
-years_clean = years_vec(~tot_miss);
-
-% Create matrix X
-X = [ones(size(u_clean)), u_clean, years_clean];
-
-% Estimate bhat
-bhat = ((X')*X)\((X')*y_clean);
-disp(bhat)
-
-% Alternatively:
-% bhat = (((X')*X)^(-1))*(X')*y_clean;
-% but this is the same as inv(A)*b. The recommended way is with \
-
-%=============================================
-% fitlm
-%=============================================
-% Control variables
-Xfitlm = [urb_vect, years_vec];
-
-% Model object
-linmodel = fitlm(Xfitlm,y);
-disp(linmodel)
-
-% Diagnostics
-plotResiduals(linmodel)
-plotResiduals(linmodel,'fitted')
-plotEffects(linmodel)
-plotAdded(linmodel)
-
-%=============================================
-% polyfit and polyval
-%=============================================
+%=================================================================
+% NEWTON-RAPHSON METHOD
+%=================================================================
 close all
-clear
-clc
 
-% Simulate variables and their relationship
-x = linspace(-1,1,1000);
-y = sin(5.*x.^2 + pi);
+% Define the derivative of the function fprime
+fprime = @(x) 3.*x.^2 - 12.*x + 11;
 
-% Fit 5,6,7th degree polynomials
-p5 = polyfit(x,y,5);
-p6 = polyfit(x,y,6);
-p7 = polyfit(x,y,7);
+% Re-initialize parameters
+it = 1;         % Iteration counter
+delta = 1e-4;   % Tolerance for criterion 1
+epsil = 1e-8;   % Tolerance for criterion 2
+maxit = 64;
+
+% Error parameters
+error_f = 10;     % Initialize error for function (any number > delta)
+error_i = 10;
+
+% Current guess
+xk = 2.5;
+disp('--------------------------')
+disp('NEWTON-RAPHSON METHOD')
+disp('--------------------------')
+while (error_f > delta) && (error_i > epsil) && (it < maxit)
+    % Compute next guess
+    xkp = xk - myf(xk) ./ fprime(xk);
+    
+    % Compute the errors at current guess
+    error_f = abs(myf(xk));
+    error_i = abs(xk - xkp) ./ (1 + abs(xkp));
+
+    % Inform about current situation
+    disp(['Value of xkp is ', num2str(xkp)])
+    disp(['Error of interval is ',num2str(error_i)])
+    disp(['Error of function is ',num2str(error_f)])
+    disp(['Iteration number ',num2str(it)])
+    disp('--------------------------')
+
+    % Update iteration counter
+    it = it+1;
+
+    % Update guess for xk
+    xk = xkp;
+end
+
+disp(['NEWTON-RAPHSON Solution is x* = ',num2str(xk)])
+
+% Illustrate problems of convergence
+x = linspace(-1,1,100);
+
+xk = 0.75;
 
 figure
-plot(x,y,'-','LineWidth',2)
+plot(x,x.^6,'-')
 hold on
-plot(x,polyval(p5,x),'-','LineWidth',1.35)
-plot(x,polyval(p6,x),'--','LineWidth',1.35)
-plot(x,polyval(p7,x),'-.','LineWidth',1.35)
-legend('Data','5th Degree', '6th Degree', '7th Degree', 'location', 'best')
-saveas(gcf,'../../notes/figures/poly_fit.png')
 
-%PROPOSED EXERCISE
-%--------------------------------------------------------------------------
-%{
-Simulate a variable X in the interval [-4,4] with 1000 points. Generate a
-variable Y = X^2 + epsilon where epsilon is white noise with standard 
-deviation 1.5. Fit a second degree polynomial and plot the simulated data
-and the fitted polynomial on the same plot.
-%}
+for it = 1:100
+    xkp = xk - (x.^6)./(6.*(x.^5));
+    plot(xkp, xkp.^6, 'dk')
+end
+legend('$f(x) = x^6$','$k = 100$','location','best','interpreter','latex')
+print(sprintf('%snewton_convergence_issues',figs_folder),'-dpng','-r1080');
+%}close all
 
 
-X = linspace(-4,4,1000);
-Y = X.^2 + 1.5.*randn(1,length(X));
-p2 = polyfit(X,Y,2);
+
+%=================================================================
+% NUMERICAL DIFFERENTIATION - FINITE DIFFERENCE
+%=================================================================
+N = 10;
+x = linspace(-5,5,N);
+
+hv = linspace(2,1e-2,8);
+
+% Analytical derivative
+fp_ana = fprime(x);
+
+% Preallocation for numerical derivatives
+dy = ones(length(hv), N);
+dx = ones(length(hv), N);
+fp_num = ones(length(hv), N);
+
+leg = {'Analytical'};
+cmap = parula(length(hv));
 
 figure
-scatter(X,Y)
+plot(x,fprime(x),'-s','LineWidth',1.2)
 hold on
-plot(X,polyval(p2,X),'-','LineWidth',1.35)
-title('Polynomial Fit')
-
-%==========================================================================
-                 % === Non-Linear Least Squares === %
-%==========================================================================
+for hh = 1:length(hv)
+    h = hv(hh);
+    
+    % Numerical derivative
+    dy(hh,:) = myf(x+h) - myf(x);
+    dx(hh,:) = h.*ones(size(dy(hh,:)));
+    fp_num(hh,:) = dy(hh,:)./dx(hh,:);
+    
+    plot(x,fp_num(hh,:),'--','Color',cmap(hh,:),'LineWidth',1.2)
+    leg{hh+1} = ['$h = ',num2str(round(h,2)),'$'];
+end
+legend(leg,'location','NorthEast','interpreter','latex')
+print(sprintf('%sfinite_differences',figs_folder),'-dpng','-r1080');
 close all
-clear
-clc
 
-%Simulate data
-N = 500;
-b1 = 2;
-b2 = -1.5;
-x = linspace(0,5,N);
-y = b1*exp(b2*x)+0.15*randn(1,N);
+% Solow example
 
-% Declare anonymous function with our model
-func_fit = @(b,xdata)(b(1)*exp(b(2)*xdata));
+s = 0.25;       % Savings rate
+dp = 0.125;     % Depreciation rate
+alp = 1/3;      % K share
 
-% Fit
-b00 = [1, -1]; % Initial condition
-[bhat,resnorm,res,exitflag,output,lamb,jacob] = lsqcurvefit(func_fit,b00,x,y);
+k0 = 1;         % Initial capital
+kss = (s./dp).^(1./(1 - alp));
 
-% Compute confidence intervals
-ci = nlparci(bhat,res,'Jacobian',jacob);
+% Finite difference solution
+T = 70;                % Time horizon
+npoints = 10;          % Number of points
+h = T./npoints;        % Step size
+k = zeros(npoints,1);
+k(1) = k0;
+for tt = 1:npoints-1
+    k(tt+1) = k(tt) + h.*(s.*(k(tt).^(alp)) - dp.*k(tt));
+end
 
-% Compute standard errors
-stderr = (ci(:,2) - ci(:,1))./3.92;
+% ODE45 Solution
+tspan = linspace(1,T,npoints);
+[t,ks] = ode45(@(t,kk) s.*(kk.^(alp)) - dp.*kk, tspan, k0);
 
-% Alternatively
-fit_nlin = fitnlm(x,y,func_fit,b00);
-
-% Predicted values
-yhat = bhat(1).*exp(bhat(2).*x);
+% Analytical solution
+tcont = linspace(0,T,1e3);
+ktrue = (s./dp + (k0.^(1-alp) - s./dp).*exp(-dp.*(1 - alp).*tcont)).^(1./(1-alp));
 
 figure
-scatter(x,y,'filled','MarkerFaceAlpha',0.35)
+plot(tcont,ktrue,'-','LineWidth',1.6)
 hold on
-plot(x,yhat,'-','LineWidth',1.5)
-legend('Data','Best Fit')
-saveas(gcf,'../../notes/figures/lsqcurvefit_performance.png')
+plot(tspan,k,'-s')
+plot(tspan,ks,'-o')
+plot(tspan,kss.*ones(npoints,1),'-r')
+legend('True Solution','Finite Difference','ode45','Steady State','location','SouthWest')
+print(sprintf('%ssolow_solution',figs_folder),'-dpng','-r1080');
+close all
+
+%=================================================================
+% NUMERICAL INTEGRATION - MIDPOINT RULE
+%=================================================================
+% One point midpoint rule
+a = 1;
+b = 5;
+fint = @(x)x.^2;
+true_int = 124/3;
+
+n = 1;
+onep_int = midpoint_rule(a,b,n,fint);
+
+% Multiple points
+n = 5;
+mpts_int = midpoint_rule(a,b,n,fint);
+
+disp(['One point midrule value = ',num2str(onep_int),'. Abs diff = ',num2str(abs(true_int - onep_int))])
+disp([num2str(n),' points midrule value = ',num2str(mpts_int),'. Abs diff = ',num2str(abs(true_int - mpts_int))])
+
+% Check convergence with N
+ni = 1;
+Np = 60;
+err_mp = ones(length(ni:Np),1);
+count = 1;
+for n = ni:Np
+    tmp_val = midpoint_rule(a,b,n,fint);
+    err_mp(count,1) = abs(true_int - tmp_val)./abs(tmp_val);
+    count = count+1;
+end
+
+figure
+stem(ni:Np,log10(err_mp))
+xlabel('$n$','interpreter','latex','fontsize',14)
+ylabel('$log_{10}(Error)$','interpreter','latex','fontsize',14)
+print(sprintf('%serrors_midpointrule',figs_folder),'-dpng','-r1080');
+
+close all
