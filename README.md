@@ -10,9 +10,9 @@ This is an introduction to Matlab and basic numerical methods for Master Student
   - First interactions. Script vs Command Window.
   - Creating Variables. Basic Operations. Arrays and Matrices.
   - Control Flow. Plots. Functions.
-- Importing and manipulating data. Polynomial fit and evaluation. Nonlinear least squares.
 - Basics of root finding, numerical differentiation and integration.
 - Basics of numerical optimization.
+- Importing and manipulating data. Polynomial fit and evaluation. Nonlinear least squares.
 
 ## Useful Materials
 
