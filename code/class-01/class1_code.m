@@ -3,7 +3,7 @@
             === INTRODUCTION TO MATLAB ===
 =========================================================
 Rafael Serrano Quintero
-April 2021
+September 2023
 
 This code shows the first commands and introduction to follow during the
 class.
@@ -229,5 +229,3 @@ xvals = [1; 0; 1; 0];
 yvals = [1; 0; 0; 1];
 
 rosen2d(xvals, yvals)
-
-
