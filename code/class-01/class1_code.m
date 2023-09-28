@@ -18,9 +18,9 @@ clc
 
 % Assignment and basic operations
 x = 5;
-disp(x*2)
-disp(x-7)
-disp(x+7)
+x*2
+x-7
+x+7
 
 % Creating variable from another
 y = x^2;
@@ -35,10 +35,9 @@ y = 2;
 disp(x)
 
 % === Ex. 1: Solve Complex Operations === %
-x = [0;pi/4]; 
 
-op1 = (log(1 + x.^2) - sqrt(1 + x.^2)) / (1 + sin(x).^2);
-op2 = log(abs(x - pi)) + x.*exp(x);
+
+
 
 %=========================================================
                         % === Vectors === %
@@ -81,8 +80,13 @@ disp(rowV.*rowV2')
 % === Ex. Concatenate Matrices === %
 v1 = [1 2 3];
 v2 = [4; 5; 6];
-M1 = [v1', v2];
-M2 = [v1; v2'];
+
+% 1. Create M1
+
+% 2. Create M2
+
+% 3. Extract element in (2,2) for M1 and M2
+
 
 % === Ex. Solve the system === %
 b = [1; - 2; 0];
@@ -113,6 +117,9 @@ disp(A < 5)
 
 disp(A > 5 | A < 9)
 disp(~(A > 3 & A < 6))
+
+% Ex. Extracting elements 
+
 
 % If-Else Statements
 b = 3;
@@ -222,10 +229,8 @@ toc
 bytwo = @(x) 2*x;
 a = bytwo(10);
 
-% Rosenbrock Example
-rosen2d = @(x,y) (1 - x).^2 + 100.*(y - x.^2).^2;
+% Ex. Rosenbrock Example
 
-xvals = [1; 0; 1; 0];
-yvals = [1; 0; 0; 1];
+% 1. Write the anonymous function with two arguments, i.e. @(x, y)
 
-rosen2d(xvals, yvals)
+% 2. Create a vector for x values and a vector for y values, then pass them as arguments to the anonymous function.
