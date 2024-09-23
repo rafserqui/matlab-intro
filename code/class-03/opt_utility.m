@@ -2,17 +2,16 @@ close all
 clear
 clc
 
-% Define function
-u = @(x) x(1) - 0.05.*x(1).^2 + log(x(2)) - 0.25 - (x(1) - 20).^2 + (x(2) - 20).^2;
+% Parameters
+gamm = 2.5;
+p = 1.0;
+w = 10.0;
 
-% Define grid
-np = 1000;
-lgrid = linspace(0, 100, np);
-kgrid = lgrid;
+% Define utility function
+u = @(c) (c^(1 - gamm)) / (1 - gamm);
 
-% Maximize using fminsearch
-x0 = [1,1];
-[xopt, fval] = fminsearch(@(x) -u(x), x0);
+% Obviously, since the budget constraint must hold with equality, c = w / p.
+cstar = w ./ p;
 
+% Use fmincon to solve the problem
 
-% Use fmincon to add the budget constraint

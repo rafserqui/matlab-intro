@@ -1,6 +1,6 @@
 %{
 Rafael Serrano Quintero
-September 2021
+September 2024
 
 This code shows deals with importing and manipulating data first, and with data fitting later. We cover linear and nonlinear regression.
 
@@ -24,8 +24,8 @@ gdp = readtable('./data/real_gdp_percapita.csv','ReadVariableNames',true);
 pop = readtable('./data/urban_pop.csv','ReadVariableNames',true);
 
 % Extract CountryCode for both files
-ccode_gdp = table2cell(gdp(:,2));
-ccode_pop = table2cell(pop(:,2));
+ccode_gdp = table2cell(gdp(:,4));
+ccode_pop = table2cell(pop(:,4));
 
 % Compare strings one by one
 compare_ccode = strcmp(ccode_gdp,ccode_pop);
@@ -68,7 +68,6 @@ plot(years,gdp_india,'-o')
 hold on
 yyaxis right
 plot(years,urb_india,'-s')
-saveas(gcf,'../../notes/figures/india_gdp_urb.png')
 
 % Relation for average (over time) GDPpc and Pop
 figure
@@ -153,7 +152,6 @@ plot(x,polyval(p5,x),'-','LineWidth',1.35)
 plot(x,polyval(p6,x),'--','LineWidth',1.35)
 plot(x,polyval(p7,x),'-.','LineWidth',1.35)
 legend('Data','5th Degree', '6th Degree', '7th Degree', 'location', 'best')
-saveas(gcf,'../../notes/figures/poly_fit.png')
 
 %PROPOSED EXERCISE
 %--------------------------------------------------------------------------
@@ -164,23 +162,16 @@ deviation 1.5. Fit a second degree polynomial and plot the simulated data
 and the fitted polynomial on the same plot.
 %}
 
-
-X = linspace(-4,4,1000);
-Y = X.^2 + 1.5.*randn(1,length(X));
-p2 = polyfit(X,Y,2);
-
-figure
-scatter(X,Y)
-hold on
-plot(X,polyval(p2,X),'-','LineWidth',1.35)
-title('Polynomial Fit')
-
 %==========================================================================
                  % === Non-Linear Least Squares === %
 %==========================================================================
 close all
 clear
 clc
+
+% Set seed
+s = RandStream('mt19937ar','Seed',1234567890);
+RandStream.setGlobalStream(s);
 
 %Simulate data
 N = 500;
@@ -213,4 +204,3 @@ scatter(x,y,'filled','MarkerFaceAlpha',0.35)
 hold on
 plot(x,yhat,'-','LineWidth',1.5)
 legend('Data','Best Fit')
-saveas(gcf,'../../notes/figures/lsqcurvefit_performance.png')

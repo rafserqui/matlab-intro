@@ -3,7 +3,7 @@
             === INTRODUCTION TO MATLAB ===
 =========================================================
 Rafael Serrano Quintero
-September 2023
+September 2024
 
 This code shows the first commands and introduction to follow during the
 class.
@@ -120,6 +120,9 @@ disp(~(A > 3 & A < 6))
 
 % Ex. Extracting elements 
 
+% 1. Elements of first column that are positive.
+
+% 2. Elements of the second row that are negative.
 
 % If-Else Statements
 b = 3;
