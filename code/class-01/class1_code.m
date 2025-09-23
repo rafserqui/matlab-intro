@@ -3,7 +3,7 @@
             === INTRODUCTION TO MATLAB ===
 =========================================================
 Rafael Serrano Quintero
-September 2024
+September 2025
 
 This code shows the first commands and introduction to follow during the
 class.

@@ -1,6 +1,6 @@
 %{
 Rafael Serrano Quintero
-September 2021
+September 2025
 
 This code introduces the bracketing method to compute a minimum.
 %}

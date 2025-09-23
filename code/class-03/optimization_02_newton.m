@@ -1,6 +1,6 @@
 %{
 Rafael Serrano Quintero
-September 2021
+September 2025
 
 This code introduces Newton-Raphson's method to compute a minimum.
 %}

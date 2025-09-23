@@ -1,6 +1,6 @@
 %{
 Rafael Serrano Quintero
-September 2021
+September 2025
 
 This code introduces the basics of root finding, numerical differentiation and integration.
 
@@ -14,8 +14,6 @@ Outline
 close all
 clear
 clc
-
-figs_folder = '../../notes/figures/';
 
 %=================================================================
 % BISECTION METHOD
@@ -151,7 +149,6 @@ for it = 1:100
     plot(xkp, xkp.^6, 'dk')
 end
 legend('$f(x) = x^6$','$k = 100$','location','best','interpreter','latex')
-print(sprintf('%snewton_convergence_issues',figs_folder),'-dpng','-r1080');
 %}close all
 
 
@@ -190,7 +187,6 @@ for hh = 1:length(hv)
     leg{hh+1} = ['$h = ',num2str(round(h,2)),'$'];
 end
 legend(leg,'location','NorthEast','interpreter','latex')
-print(sprintf('%sfinite_differences',figs_folder),'-dpng','-r1080');
 close all
 
 % Solow example
@@ -227,7 +223,6 @@ plot(tspan,k,'-s')
 plot(tspan,ks,'-o')
 plot(tspan,kss.*ones(npoints,1),'-r')
 legend('True Solution','Finite Difference','ode45','Steady State','location','SouthWest')
-print(sprintf('%ssolow_solution',figs_folder),'-dpng','-r1080');
 close all
 
 %=================================================================
@@ -264,6 +259,5 @@ figure
 stem(ni:Np,log10(err_mp))
 xlabel('$n$','interpreter','latex','fontsize',14)
 ylabel('$log_{10}(Error)$','interpreter','latex','fontsize',14)
-print(sprintf('%serrors_midpointrule',figs_folder),'-dpng','-r1080');
 
 close all
